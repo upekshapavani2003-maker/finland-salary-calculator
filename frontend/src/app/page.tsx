@@ -1,7 +1,11 @@
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white">
-      {/* Blank page - all development moved to backend */}
+    <div className="min-h-screen bg-gray-50">
+      {/* Main content area between navigation bars */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center">
+        </div>
+      </div>
     </div>
   );
 }

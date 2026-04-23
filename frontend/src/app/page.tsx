@@ -1,12 +1,11 @@
-import ModeSelector from '@/components/ModeSelector';
+import SalaryCalculator from '@/components/SalaryCalculator';
+import InfoCards from '@/components/InfoCards';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Mode Selection Component - Left Aligned */}
-      <div className="flex justify-start">
-        <ModeSelector />
-      </div>
+    <div className="bg-white">
+      <SalaryCalculator />
+      <InfoCards />
     </div>
   );
 }

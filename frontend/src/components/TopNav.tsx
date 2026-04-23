@@ -11,6 +11,7 @@ export default function TopNav() {
             </div>
             <div className="ml-3">
               <h1 className="text-lg font-semibold text-gray-900">Finland Salary Calculator</h1>
+              <p className="text-sm text-gray-600">Know your take-home pay</p>
             </div>
           </div>
 

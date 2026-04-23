@@ -6,8 +6,10 @@ export default function BottomNav() {
           
           {/* Left side - Logo and Copyright */}
           <div className="flex items-center space-x-3">
-            {/* Calculator Icon */}
-            <img src="/assets/logo-icon.jpg" alt="Finland Salary Calculator" className="w-8 h-8 rounded-[4px]" />
+            {/* Logo placeholder */}
+            <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
+              <span className="text-blue-900 font-bold text-sm">FI</span>
+            </div>
             <div className="text-white">
               <h3 className="text-sm font-semibold">Finland Salary Calculator</h3>
               <p className="text-xs opacity-90">© 2024 All rights reserved.</p>

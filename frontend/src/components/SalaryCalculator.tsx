@@ -131,11 +131,12 @@ export default function SalaryCalculator() {
                 </div>
               </div>
 
-              <button className="w-full bg-blue-700 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-200 transition-all flex items-center justify-center gap-2">
+              <button className="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-200 transition-all flex items-center justify-center gap-2">
                 <Calculator size={18} />
                 Calculate Net Salary
               </button>
 
+              {/* HELPER BOX */}
               <div className="bg-blue-50/50 rounded-xl p-5 border border-blue-100">
                 <p className="text-blue-900 font-bold text-sm mb-3">What should I include in my salary?</p>
                 <div className="flex flex-wrap gap-4 mb-3">
@@ -148,6 +149,9 @@ export default function SalaryCalculator() {
                     </div>
                   ))}
                 </div>
+                <p className="text-[11px] text-gray-500 font-medium mt-1">
+                  Include all taxable income before tax deductions.
+                </p>
               </div>
             </div>
           </div>

@@ -32,6 +32,11 @@ export default function InfoCards() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Heading above cards */}
+      <h2 className="text-xl font-bold text-center text-gray-900 mb-4 mt-12">
+        Learn more about taxes in Finland
+      </h2>
+
       {/* Grid layout for equal sizing */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {cards.map((card, index) => (

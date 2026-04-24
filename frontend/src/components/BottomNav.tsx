@@ -6,9 +6,13 @@ export default function BottomNav() {
           
           {/* Left side - Logo and Copyright */}
           <div className="flex items-center space-x-3">
-            {/* Logo placeholder */}
-            <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
-              <span className="text-blue-900 font-bold text-sm">FI</span>
+            {/* Logo image */}
+            <div className="w-8 h-8">
+              <img
+                src="/assets/logo-icon.jpg"
+                alt="Finland Salary Calculator Logo"
+                className="w-8 h-8 object-contain rounded-md"
+              />
             </div>
             <div className="text-white">
               <h3 className="text-sm font-semibold">Finland Salary Calculator</h3>

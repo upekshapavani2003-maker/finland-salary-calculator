@@ -142,7 +142,7 @@ export default function SalaryCalculator() {
               <p className="text-blue-900 font-bold text-sm mb-4">What should I include in my salary?</p>
               <div className="flex flex-row justify-start items-center gap-6 mb-2 overflow-x-auto no-scrollbar">
                 {['Base salary', 'Overtime pay', 'Bonuses', 'Allowances'].map(item => (
-                  <div key={item} className="flex items-center gap-1.5 text-[10px] text-black-800 font-medium whitespace-nowrap">
+                  <div key={item} className="flex items-center gap-1.5 text-[10px] text-black-900 font-medium whitespace-nowrap">
                     <div className="w-3.5 h-3.5 rounded-full bg-blue-700 flex items-center justify-center text-white flex-shrink-0">
                       <Check size={9} strokeWidth={4} />
                     </div>

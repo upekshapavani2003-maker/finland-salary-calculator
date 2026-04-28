@@ -54,7 +54,7 @@ export default function SalaryCalculator() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           
           {/* LEFT COLUMN: INPUTS - Added h-full and flex column to match heights */}
-          <div className="lg:col-span-5 bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex flex-col justify-between">
+          <div className="lg:col-span-5 bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex flex-col justify-start">
             <div>
               <div className="flex gap-3 mb-10">
                 <button 
@@ -80,7 +80,7 @@ export default function SalaryCalculator() {
                 </button>
               </div>
 
-              <div className="space-y-8">
+              <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-3">Gross Salary</label>
                   <div className="flex gap-2">
@@ -138,9 +138,9 @@ export default function SalaryCalculator() {
             </div>
 
             {/* Helper box now pushes to bottom with extra padding */}
-            <div className="bg-blue-50/50 rounded-xl p-6 border border-blue-100 mt-12">
+            <div className="bg-blue-50/50 rounded-xl p-6 border border-blue-100 mt-8">
               <p className="text-blue-900 font-bold text-sm mb-4">What should I include in my salary?</p>
-              <div className="flex flex-row justify-between items-center gap-1 mb-3 overflow-x-auto no-scrollbar">
+              <div className="flex flex-row justify-start items-center gap-6 mb-2 overflow-x-auto no-scrollbar">
                 {['Base salary', 'Overtime pay', 'Bonuses', 'Allowances'].map(item => (
                   <div key={item} className="flex items-center gap-1.5 text-[10px] text-black-800 font-medium whitespace-nowrap">
                     <div className="w-3.5 h-3.5 rounded-full bg-blue-700 flex items-center justify-center text-white flex-shrink-0">
@@ -166,7 +166,7 @@ export default function SalaryCalculator() {
                   Your Net Salary 
                   <Info size={14} className="text-blue-400" />
                 </div>
-                <div className="text-5xl font-black text-[#10B981] my-2">
+                <div className="text-4xl font-black text-[#10B981] my-2">
                   €{"\u00A0"}{netSalary.toLocaleString(undefined, {maximumFractionDigits: 0})}
                   <span className="text-lg font-medium text-gray-400 ml-2">/ month</span>
                 </div>

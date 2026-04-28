@@ -1,3 +1,4 @@
+"use client";
 import SalaryCalculator from '@/components/SalaryCalculator';
 import InfoCards from '@/components/InfoCards';
 

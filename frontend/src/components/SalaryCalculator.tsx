@@ -16,7 +16,9 @@ import {
   Calendar,
   Wallet,
   Scale,
-  ListTodo
+  ListTodo,
+  ChevronDown,
+  ShieldCheck as ShieldCheckIcon
 } from 'lucide-react';
 
 export default function SalaryCalculator() {
@@ -26,7 +28,15 @@ export default function SalaryCalculator() {
   const [churchMember, setChurchMember] = useState<boolean>(false);
   const [selectedMode, setSelectedMode] = useState<'simple' | 'advanced'>('simple');
   
+  // Advanced Mode Sub-states
+  const [baseSalary, setBaseSalary] = useState<number>(3000);
+  const [overtimePay, setOvertimePay] = useState<number>(300);
+  const [bonuses, setBonuses] = useState<number>(400);
+  const [allowances, setAllowances] = useState<number>(200);
+  const [taxYear, setTaxYear] = useState<string>('2024');
+
   const [isTaxOpen, setIsTaxOpen] = useState<boolean>(true);
+  const [isCalcOpen, setIsCalcOpen] = useState<boolean>(false);
 
   // Logic for UI display
   const municipalityRate = parseFloat(selectedMunicipality.match(/\(([\d.]+)%\)/)?.[1] || '17.00');
@@ -34,7 +44,10 @@ export default function SalaryCalculator() {
   const unemploymentRate = 1.50;
   const churchRate = churchMember ? 1.00 : 0.00;
   
-  const actualGrossMonthly = salaryPeriod === 'Yearly' ? grossSalary / 12 : grossSalary;
+  // Calculate total gross based on the selected mode
+  const actualGrossMonthly = selectedMode === 'advanced' 
+    ? (baseSalary + overtimePay + bonuses + allowances)
+    : (salaryPeriod === 'Yearly' ? grossSalary / 12 : grossSalary);
   
   const pension = actualGrossMonthly * (pensionRate / 100);
   const unemployment = actualGrossMonthly * (unemploymentRate / 100);
@@ -53,7 +66,7 @@ export default function SalaryCalculator() {
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           
-          {/* LEFT COLUMN: INPUTS - Added h-full and flex column to match heights */}
+          {/* LEFT COLUMN: INPUTS */}
           <div className="lg:col-span-5 bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex flex-col justify-start">
             <div>
               <div className="flex gap-3 mb-10">
@@ -80,69 +93,188 @@ export default function SalaryCalculator() {
                 </button>
               </div>
 
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-3">Gross Salary</label>
-                  <div className="flex gap-2">
-                    <div className="relative flex-1">
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium text-sm">€{"\u00A0"}</span>
-                      <input 
-                        type="number" 
-                        value={grossSalary}
-                        onChange={(e) => setGrossSalary(Number(e.target.value))}
-                        className="w-full pl-10 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-semibold text-gray-900" 
-                      />
-                    </div>
-                    <select 
-                      value={salaryPeriod}
-                      onChange={(e) => setSalaryPeriod(e.target.value as any)}
-                      className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-4 font-medium outline-none text-gray-700"
-                    >
-                      <option>Monthly</option>
-                      <option>Yearly</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-6">
+              {/* MODE SELECTION RENDER LOGIC */}
+              {selectedMode === 'simple' ? (
+                <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-3">Municipality</label>
-                    <select 
-                      value={selectedMunicipality}
-                      onChange={(e) => setSelectedMunicipality(e.target.value)}
-                      className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-4 outline-none text-sm text-gray-700"
-                    >
-                      {municipalities.map(m => <option key={m}>{m}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-3">Church Tax</label>
-                    <div className="flex items-center gap-8 h-[60px]">
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input type="radio" checked={churchMember} onChange={() => setChurchMember(true)} className="w-4 h-4 text-blue-600 focus:ring-blue-500" />
-                        <span className="text-sm text-gray-600">Yes (1.0%)</span>
-                      </label>
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input type="radio" checked={!churchMember} onChange={() => setChurchMember(false)} className="w-4 h-4 text-blue-600 focus:ring-blue-500" />
-                        <span className="text-sm text-gray-600">No</span>
-                      </label>
+                    <label className="block text-sm font-bold text-gray-700 mb-3">Gross Salary</label>
+                    <div className="flex gap-2">
+                      <div className="relative flex-1">
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium text-sm">€{"\u00A0"}</span>
+                        <input 
+                          type="number" 
+                          value={grossSalary}
+                          onChange={(e) => setGrossSalary(Number(e.target.value))}
+                          className="w-full pl-10 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-semibold text-gray-900" 
+                        />
+                      </div>
+                      <select 
+                        value={salaryPeriod}
+                        onChange={(e) => setSalaryPeriod(e.target.value as any)}
+                        className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-4 font-medium outline-none text-gray-700"
+                      >
+                        <option>Monthly</option>
+                        <option>Yearly</option>
+                      </select>
                     </div>
                   </div>
-                </div>
 
-                <button className="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-200 transition-all flex items-center justify-center gap-4 mt-2">
-                  <Calculator size={18} />
-                  Calculate Net Salary
-                </button>
-              </div>
+                  <div className="grid grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-3">Municipality</label>
+                      <select 
+                        value={selectedMunicipality}
+                        onChange={(e) => setSelectedMunicipality(e.target.value)}
+                        className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-4 outline-none text-sm text-gray-700"
+                      >
+                        {municipalities.map(m => <option key={m}>{m}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-3">Church Tax</label>
+                      <div className="flex flex-col gap-1 justify-center h-[60px]">
+                        <div className="flex items-center gap-6">
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" checked={churchMember} onChange={() => setChurchMember(true)} className="w-4 h-4 text-blue-600 focus:ring-blue-500" />
+                            <span className="text-xs font-medium text-gray-600">Yes (1.00%)</span>
+                          </label>
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" checked={!churchMember} onChange={() => setChurchMember(false)} className="w-4 h-4 text-blue-600 focus:ring-blue-500" />
+                            <span className="text-xs font-medium text-gray-600">No</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button className="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-200 transition-all flex items-center justify-center gap-4 mt-2">
+                    <Calculator size={18} />
+                    Calculate Net Salary
+                  </button>
+                  
+                  <div className="flex items-center justify-center gap-2 text-[10px] text-gray-400 mt-6">
+                    <ShieldCheckIcon size={14} className="text-green-600 flex-shrink-0" />
+                    <span>Your data is not stored. Calculations are done in your browser.</span>
+                  </div>
+                </div>
+              ) : (
+                /* Advanced Inputs UI */
+                <div className="space-y-6">
+                  <div>
+                    <div className="flex flex-col gap-1 mb-4">
+                      <span className="text-sm font-bold text-gray-900">1. Income Breakdown</span>
+                      <span className="text-[10px] text-gray-400 font-medium">Enter your income components before tax.</span>
+                    </div>
+
+                    {[
+                      { label: 'Base Salary', val: baseSalary, setter: setBaseSalary },
+                      { label: 'Overtime Pay', val: overtimePay, setter: setOvertimePay },
+                      { label: 'Bonuses', val: bonuses, setter: setBonuses },
+                      { label: 'Allowances', val: allowances, setter: setAllowances }
+                    ].map((item, index) => (
+                      <div key={index} className="flex items-center justify-between gap-4 mb-3">
+                        <label className="text-xs font-bold text-gray-700 w-1/3">{item.label}</label>
+                        <div className="flex gap-2 flex-1">
+                          <div className="relative flex-1">
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">€</span>
+                            <input 
+                              type="number" 
+                              value={item.val}
+                              onChange={(e) => item.setter(Number(e.target.value))}
+                              className="w-full pl-7 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm font-semibold text-gray-900" 
+                            />
+                          </div>
+                          <select className="bg-gray-50 border border-gray-200 rounded-lg px-2 py-2 text-[10px] font-medium outline-none text-gray-500">
+                            <option>Monthly</option>
+                            <option>Yearly</option>
+                          </select>
+                        </div>
+                      </div>
+                    ))}
+
+                    <div className="p-4 bg-blue-50/30 rounded-lg mt-5 border border-blue-100/30 space-y-3">
+                      <div className="text-xs font-bold text-blue-900">Total Gross Income</div>
+                      <div className="flex justify-between items-center">
+                        <div className="text-blue-700 font-black text-sm">€ {actualGrossMonthly.toLocaleString()} / month</div>
+                        <div className="text-blue-600 font-black text-sm">€ {(actualGrossMonthly * 12).toLocaleString()} / year</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 border-t border-gray-50">
+                    <div className="flex items-center gap-2 mb-4">
+                      <span className="text-sm font-bold text-gray-900">2. Tax Settings</span>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-sm text-gray-900 font-bold block mb-2">Municipality (Affects municipal tax rate)</label>
+                        <div className="relative">
+                          <Building2 size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-600" />
+                          <select 
+                            value={selectedMunicipality}
+                            onChange={(e) => setSelectedMunicipality(e.target.value)}
+                            className="w-full pl-9 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-xs font-medium outline-none appearance-none"
+                          >
+                            {municipalities.map(m => <option key={m}>{m}</option>)}
+                          </select>
+                          <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                        </div>
+                      </div>
+
+                      {/* Church Tax Section */}
+                      <div className="border-t border-gray-100 pt-4">
+                        <label className="text-sm text-gray-900 font-bold block mb-2">Church Tax</label>
+                        <div className="flex items-center justify-between">
+                          <div className="flex gap-6">
+                            <label className="flex items-center gap-2 cursor-pointer">
+                              <input type="radio" checked={churchMember} onChange={() => setChurchMember(true)} className="w-4 h-4 text-blue-600" />
+                              <span className="text-xs font-medium text-gray-600">Yes (1.00%)</span>
+                            </label>
+                            <label className="flex items-center gap-2 cursor-pointer">
+                              <input type="radio" checked={!churchMember} onChange={() => setChurchMember(false)} className="w-4 h-4 text-blue-600" />
+                              <span className="text-xs font-medium text-gray-600">No</span>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Tax Year Section */}
+                      <div className="border-t border-gray-100 pt-4">
+                        <div className="flex items-center justify-between">
+                          <label className="text-sm text-gray-900 font-bold">Tax Year</label>
+                          <select 
+                            value={taxYear} 
+                            onChange={(e) => setTaxYear(e.target.value)}
+                            className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-700 outline-none"
+                          >
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button className="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-200 transition-all flex items-center justify-center gap-4 mt-4">
+                    <Calculator size={18} />
+                    Calculate Net Salary
+                  </button>
+
+                  <div className="flex items-center justify-center gap-2 text-[10px] text-gray-400 mt-6">
+                    <ShieldCheckIcon size={14} className="text-green-600 flex-shrink-0" />
+                    <span>Your data is not stored. Calculations are done in your browser.</span>
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Helper box now pushes to bottom with extra padding */}
             <div className="bg-blue-50/50 rounded-xl p-6 border border-blue-100 mt-8">
               <p className="text-blue-900 font-bold text-sm mb-4">What should I include in my salary?</p>
               <div className="flex flex-row justify-start items-center gap-6 mb-2 overflow-x-auto no-scrollbar">
                 {['Base salary', 'Overtime pay', 'Bonuses', 'Allowances'].map(item => (
-                  <div key={item} className="flex items-center gap-1.5 text-[10px] text-black-900 font-medium whitespace-nowrap">
+                  <div key={item} className="flex items-center gap-1.5 text-[10px] text-black font-medium whitespace-nowrap">
                     <div className="w-3.5 h-3.5 rounded-full bg-blue-700 flex items-center justify-center text-white flex-shrink-0">
                       <Check size={9} strokeWidth={4} />
                     </div>
@@ -238,11 +370,11 @@ export default function SalaryCalculator() {
                   {isTaxOpen && (
                     <div className="bg-white px-3 py-2 space-y-3">
                       {[
-                        { label: 'State Tax', value: stateTax, icon: <Landmark size={12} className="text-indigo-400" /> },
-                        { label: 'Municipality', value: municipalTax, icon: <Building2 size={12} className="text-orange-400" /> },
-                        { label: 'Pension', value: pension, icon: <Coins size={12} className="text-yellow-500" /> },
-                        { label: 'Unemployment', value: unemployment, icon: <ShieldCheck size={12} className="text-emerald-400" /> },
-                        ...(churchMember ? [{ label: 'Church Tax', value: churchTax, icon: <Church size={12} className="text-purple-400" /> }] : []),
+                        { label: 'State Income Tax', value: stateTax, icon: <Landmark size={12} className="text-indigo-400" /> },
+                        { label: 'Municipal Tax (Helsinki 17.00%)', value: municipalTax, icon: <Building2 size={12} className="text-orange-400" /> },
+                        { label: 'Pension Contribution (7.15%)', value: pension, icon: <Coins size={12} className="text-yellow-500" /> },
+                        { label: 'Unemployment Insurance (1.50%)', value: unemployment, icon: <ShieldCheck size={12} className="text-emerald-400" /> },
+                        ...(churchMember ? [{ label: 'Church Tax (1.0%)', value: churchTax, icon: <Church size={12} className="text-purple-400" /> }] : []),
                       ].map((item, idx) => (
                         <div key={idx} className="flex justify-between items-center text-[11px] pl-4">
                           <span className="text-gray-500 flex items-center gap-2">
@@ -271,7 +403,7 @@ export default function SalaryCalculator() {
                 </div>
                 <div className="bg-[#F1F5F9] border border-slate-200 rounded-xl p-4 space-y-3">
                   {[
-                    { label: 'Tax Year', value: '2024', icon: <Calendar size={12} className="text-blue-500" /> },
+                    { label: 'Tax Year', value: taxYear, icon: <Calendar size={12} className="text-blue-500" /> },
                     { label: 'Municipality Tax Rate', value: `${municipalityRate.toFixed(2)}%`, icon: <Building2 size={12} className="text-orange-500" /> },
                     { label: 'State Tax Method', value: 'Progressive', icon: <Scale size={12} className="text-indigo-500" /> },
                     { label: 'Pension Contribution', value: '7.15%', icon: <Coins size={12} className="text-yellow-600" /> },
@@ -286,19 +418,43 @@ export default function SalaryCalculator() {
                     </div>
                   ))}
                   <div className="mt-4 pt-4 border-t border-gray-200 text-[10px] text-gray-400 leading-tight">
-                    This is an estimate based on 2024 tax rates and average deductions.
+                    This is an estimate based on {taxYear} tax rates and average deductions.
                   </div>
                 </div>
               </div>
             </div>
 
-            <button className="flex items-center justify-between w-full p-2 text-blue-700 font-bold text-sm hover:bg-blue-50 rounded-lg transition-colors group">
-              <span className="flex items-center gap-2">
-                <ChevronUp size={14} className="rotate-90 text-blue-500" /> 
-                How this is calculated
-              </span>
-              <ChevronUp size={14} className="rotate-180 text-blue-300" />
-            </button>
+            {/* How this is calculated - Updated Section */}
+            <div className="border border-gray-200 rounded-xl overflow-hidden shadow-sm mt-6">
+              <div 
+                onClick={() => setIsCalcOpen(!isCalcOpen)}
+                className="flex justify-between items-center p-4 bg-gray-50/30 cursor-pointer hover:bg-gray-50/80 transition-colors"
+              >
+                <span className="text-blue-700 font-bold text-sm flex items-center gap-2">
+                  <ChevronUp size={14} className={`text-blue-500 transition-transform duration-200 ${isCalcOpen ? 'rotate-0' : 'rotate-180'}`} /> 
+                  How this is calculated
+                </span>
+                <ChevronDown size={14} className="text-gray-400" />
+              </div>
+
+              {isCalcOpen && (
+                <div className="bg-white p-6 border-t border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                  <div>
+                    <ol className="list-decimal pl-4 space-y-2 text-xs text-gray-600 font-medium">
+                      <li>Your gross income is calculated from all income components (annual).</li>
+                      <li>Social security contributions (pension + unemployment) are deducted.</li>
+                      <li>Remaining income is taxed using progressive state tax rates.</li>
+                      <li>Municipal and church taxes are calculated on the taxable income.</li>
+                    </ol>
+                  </div>
+                  <div>
+                    <button className="px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-xs font-semibold text-blue-700 rounded-lg shadow-sm transition-all whitespace-nowrap">
+                      Show tax brackets used
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

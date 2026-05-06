@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import TopNav from "@/components/TopNav";
 import BottomNav from "@/components/BottomNav";
 
 const geistSans = Geist({
@@ -30,7 +29,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <TopNav />
+        {/* TopNav removed from here to prevent duplication */}
         <main className="flex-grow">{children}</main>
         <BottomNav />
       </body>

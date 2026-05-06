@@ -1,4 +1,12 @@
-export default function TopNav() {
+"use client";
+import React from 'react';
+
+interface TopNavProps {
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+}
+
+export default function TopNav({ activeTab, setActiveTab }: TopNavProps) {
   return (
     <header className="bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -6,7 +14,6 @@ export default function TopNav() {
           {/* Left side - Logo and Title */}
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              {/* Calculator Icon */}
               <img src="/assets/logo-icon.jpg" alt="logo" className="w-8 h-8 rounded-[4px]" />
             </div>
             <div className="ml-3">
@@ -17,21 +24,44 @@ export default function TopNav() {
 
           {/* Center - Navigation Links */}
           <nav className="hidden md:flex space-x-8">
-            <a href="#" className="text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium">
+            <button 
+              onClick={() => setActiveTab('calculator')}
+              className={`px-3 py-2 text-sm font-medium border-b-2 transition-colors duration-150 ${
+                activeTab === 'calculator' 
+                  ? 'border-blue-600 text-blue-600 font-semibold' 
+                  : 'border-transparent text-gray-700 hover:text-gray-900 hover:border-gray-300'
+              }`}
+            >
               Calculator
-            </a>
-            <a href="#" className="text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium">
+            </button>
+            <button 
+              onClick={() => setActiveTab('how-it-works')}
+              className={`px-3 py-2 text-sm font-medium border-b-2 transition-colors duration-150 ${
+                activeTab === 'how-it-works' 
+                  ? 'border-blue-600 text-blue-600 font-semibold' 
+                  : 'border-transparent text-gray-700 hover:text-gray-900 hover:border-gray-300'
+              }`}
+            >
               How it works
-            </a>
-            <a href="#" className="text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium">
+            </button>
+            <button 
+              onClick={() => setActiveTab('salary-by-city')}
+              className="text-gray-700 border-transparent hover:text-gray-900 px-3 py-2 text-sm font-medium border-b-2"
+            >
               Salary by City
-            </a>
-            <a href="#" className="text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium">
+            </button>
+            <button 
+              onClick={() => setActiveTab('guides')}
+              className="text-gray-700 border-transparent hover:text-gray-900 px-3 py-2 text-sm font-medium border-b-2"
+            >
               Guides
-            </a>
-            <a href="#" className="text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium">
+            </button>
+            <button 
+              onClick={() => setActiveTab('about')}
+              className="text-gray-700 border-transparent hover:text-gray-900 px-3 py-2 text-sm font-medium border-b-2"
+            >
               About
-            </a>
+            </button>
           </nav>
 
           {/* Right side - Language Selector */}
@@ -63,11 +93,11 @@ export default function TopNav() {
         {/* Mobile menu - hidden by default */}
         <div className="hidden md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <a href="#" className="text-gray-700 hover:text-gray-900 block px-3 py-2 text-base font-medium">Calculator</a>
-            <a href="#" className="text-gray-700 hover:text-gray-900 block px-3 py-2 text-base font-medium">How it works</a>
-            <a href="#" className="text-gray-700 hover:text-gray-900 block px-3 py-2 text-base font-medium">Salary by City</a>
-            <a href="#" className="text-gray-700 hover:text-gray-900 block px-3 py-2 text-base font-medium">Guides</a>
-            <a href="#" className="text-gray-700 hover:text-gray-900 block px-3 py-2 text-base font-medium">About</a>
+            <button onClick={() => setActiveTab('calculator')} className="text-gray-700 hover:text-gray-900 block px-3 py-2 text-base font-medium">Calculator</button>
+            <button onClick={() => setActiveTab('how-it-works')} className="text-gray-700 hover:text-gray-900 block px-3 py-2 text-base font-medium">How it works</button>
+            <button className="text-gray-700 hover:text-gray-900 block px-3 py-2 text-base font-medium">Salary by City</button>
+            <button className="text-gray-700 hover:text-gray-900 block px-3 py-2 text-base font-medium">Guides</button>
+            <button className="text-gray-700 hover:text-gray-900 block px-3 py-2 text-base font-medium">About</button>
           </div>
         </div>
       </div>

@@ -18,25 +18,52 @@ import {
   Scale,
   ListTodo,
   ChevronDown,
-  ShieldCheck as ShieldCheckIcon
+  ShieldCheck as ShieldCheckIcon,
+  Trash2
 } from 'lucide-react';
 
 export default function SalaryCalculator() {
-  const [grossSalary, setGrossSalary] = useState<number>(4000);
+  // State to check if the user has calculated the results
+  const [hasCalculated, setHasCalculated] = useState<boolean>(false);
+
+  // Input states (blank by default as requested)
+  const [grossSalary, setGrossSalary] = useState<number | ''>('');
   const [salaryPeriod, setSalaryPeriod] = useState<'Monthly' | 'Yearly'>('Monthly');
   const [selectedMunicipality, setSelectedMunicipality] = useState<string>('Helsinki (17.00%)');
   const [churchMember, setChurchMember] = useState<boolean>(false);
   const [selectedMode, setSelectedMode] = useState<'simple' | 'advanced'>('simple');
   
-  // Advanced Mode Sub-states
-  const [baseSalary, setBaseSalary] = useState<number>(3000);
-  const [overtimePay, setOvertimePay] = useState<number>(300);
-  const [bonuses, setBonuses] = useState<number>(400);
-  const [allowances, setAllowances] = useState<number>(200);
+  // Advanced Mode Sub-states (blank by default)
+  const [baseSalary, setBaseSalary] = useState<number | ''>('');
+  const [overtimePay, setOvertimePay] = useState<number | ''>('');
+  const [bonuses, setBonuses] = useState<number | ''>('');
+  const [allowances, setAllowances] = useState<number | ''>('');
   const [taxYear, setTaxYear] = useState<string>('2024');
 
   const [isTaxOpen, setIsTaxOpen] = useState<boolean>(true);
   const [isCalcOpen, setIsCalcOpen] = useState<boolean>(false);
+
+  // States to hold the calculated results only after submission
+  const [calculatedValues, setCalculatedValues] = useState<{
+    grossMonthly: number;
+    netSalary: number;
+    totalTax: number;
+    stateTax: number;
+    municipalTax: number;
+    pension: number;
+    unemployment: number;
+    churchTax: number;
+    municipalityRate: number;
+    taxYear: string;
+    churchMember: boolean;
+  } | null>(null);
+
+  // Helper values to safely use in calculations
+  const parsedGrossSalary = typeof grossSalary === 'number' ? grossSalary : 0;
+  const parsedBaseSalary = typeof baseSalary === 'number' ? baseSalary : 0;
+  const parsedOvertime = typeof overtimePay === 'number' ? overtimePay : 0;
+  const parsedBonuses = typeof bonuses === 'number' ? bonuses : 0;
+  const parsedAllowances = typeof allowances === 'number' ? allowances : 0;
 
   // Logic for UI display
   const municipalityRate = parseFloat(selectedMunicipality.match(/\(([\d.]+)%\)/)?.[1] || '17.00');
@@ -44,10 +71,9 @@ export default function SalaryCalculator() {
   const unemploymentRate = 1.50;
   const churchRate = churchMember ? 1.00 : 0.00;
   
-  // Calculate total gross based on the selected mode
   const actualGrossMonthly = selectedMode === 'advanced' 
-    ? (baseSalary + overtimePay + bonuses + allowances)
-    : (salaryPeriod === 'Yearly' ? grossSalary / 12 : grossSalary);
+    ? (parsedBaseSalary + parsedOvertime + parsedBonuses + parsedAllowances)
+    : (salaryPeriod === 'Yearly' ? parsedGrossSalary / 12 : parsedGrossSalary);
   
   const pension = actualGrossMonthly * (pensionRate / 100);
   const unemployment = actualGrossMonthly * (unemploymentRate / 100);
@@ -61,16 +87,59 @@ export default function SalaryCalculator() {
     'Helsinki (17.00%)', 'Espoo (16.50%)', 'Tampere (18.00%)', 'Vantaa (17.50%)', 'Oulu (18.50%)'
   ];
 
+  const handleCalculate = (e: React.FormEvent) => {
+    e.preventDefault();
+    setCalculatedValues({
+      grossMonthly: actualGrossMonthly,
+      netSalary,
+      totalTax,
+      stateTax,
+      municipalTax,
+      pension,
+      unemployment,
+      churchTax,
+      municipalityRate,
+      taxYear,
+      churchMember,
+    });
+    setHasCalculated(true);
+  };
+
+  // Clear function to reset inputs
+  const handleClear = () => {
+    setGrossSalary('');
+    setBaseSalary('');
+    setOvertimePay('');
+    setBonuses('');
+    setAllowances('');
+    setCalculatedValues(null);
+    setHasCalculated(false);
+  };
+
+  // Determine values to display (show calculated state or 0)
+  const displayNetSalary = hasCalculated && calculatedValues ? calculatedValues.netSalary : 0;
+  const displayTotalTax = hasCalculated && calculatedValues ? calculatedValues.totalTax : 0;
+  const displayGrossMonthly = hasCalculated && calculatedValues ? calculatedValues.grossMonthly : 0;
+  const displayStateTax = hasCalculated && calculatedValues ? calculatedValues.stateTax : 0;
+  const displayMunicipalTax = hasCalculated && calculatedValues ? calculatedValues.municipalTax : 0;
+  const displayPension = hasCalculated && calculatedValues ? calculatedValues.pension : 0;
+  const displayUnemployment = hasCalculated && calculatedValues ? calculatedValues.unemployment : 0;
+  const displayChurchTax = hasCalculated && calculatedValues ? calculatedValues.churchTax : 0;
+  const displayMunicipalityRate = hasCalculated && calculatedValues ? calculatedValues.municipalityRate : municipalityRate;
+  const displayTaxYear = hasCalculated && calculatedValues ? calculatedValues.taxYear : taxYear;
+  const displayChurchMember = hasCalculated && calculatedValues ? calculatedValues.churchMember : churchMember;
+
   return (
     <div className="min-h-screen bg-[#F8FAFC] py-12 px-4">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+        <form onSubmit={handleCalculate} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           
           {/* LEFT COLUMN: INPUTS */}
           <div className="lg:col-span-5 bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex flex-col justify-start">
             <div>
               <div className="flex gap-3 mb-10">
                 <button 
+                  type="button"
                   onClick={() => setSelectedMode('simple')}
                   className={`flex-1 flex items-center gap-3 p-4 rounded-xl border-2 text-left transition-all ${selectedMode === 'simple' ? 'border-blue-600 bg-blue-50' : 'border-gray-100 hover:border-gray-200'}`}
                 >
@@ -82,6 +151,7 @@ export default function SalaryCalculator() {
                 </button>
 
                 <button 
+                  type="button"
                   onClick={() => setSelectedMode('advanced')}
                   className={`flex-1 flex items-center gap-3 p-4 rounded-xl border-2 text-left transition-all ${selectedMode === 'advanced' ? 'border-blue-600 bg-blue-50' : 'border-gray-100 hover:border-gray-200'}`}
                 >
@@ -98,20 +168,34 @@ export default function SalaryCalculator() {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-bold text-gray-700 mb-3">Gross Salary</label>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 items-center">
                       <div className="relative flex-1">
                         <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium text-sm">€{"\u00A0"}</span>
                         <input 
                           type="number" 
+                          placeholder="0"
                           value={grossSalary}
-                          onChange={(e) => setGrossSalary(Number(e.target.value))}
-                          className="w-full pl-10 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-semibold text-gray-900" 
+                          onChange={(e) => {
+                            setGrossSalary(e.target.value === '' ? '' : Number(e.target.value));
+                            // Optional: immediately unset calculated state on edit if desired, or let it remain until recalculated
+                          }}
+                          className="w-full pl-10 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-semibold text-gray-900 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
                         />
                       </div>
+
+                      <button
+                        type="button"
+                        onClick={handleClear}
+                        className="p-4 bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 rounded-lg transition-colors flex items-center justify-center"
+                        title="Clear amount"
+                      >
+                        <Trash2 size={20} />
+                      </button>
+
                       <select 
                         value={salaryPeriod}
                         onChange={(e) => setSalaryPeriod(e.target.value as any)}
-                        className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-4 font-medium outline-none text-gray-700"
+                        className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-4 font-medium outline-none text-gray-700 text-sm"
                       >
                         <option>Monthly</option>
                         <option>Yearly</option>
@@ -147,7 +231,7 @@ export default function SalaryCalculator() {
                     </div>
                   </div>
 
-                  <button className="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-200 transition-all flex items-center justify-center gap-4 mt-2">
+                  <button type="submit" className="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-200 transition-all flex items-center justify-center gap-4 mt-2">
                     <Calculator size={18} />
                     Calculate Net Salary
                   </button>
@@ -173,17 +257,28 @@ export default function SalaryCalculator() {
                       { label: 'Allowances', val: allowances, setter: setAllowances }
                     ].map((item, index) => (
                       <div key={index} className="flex items-center justify-between gap-4 mb-3">
-                        <label className="text-xs font-bold text-gray-700 w-1/3">{item.label}</label>
+                        <label className="text-sm font-bold text-gray-700 w-1/3">{item.label}</label>
                         <div className="flex gap-2 flex-1">
                           <div className="relative flex-1">
                             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">€</span>
                             <input 
-                              type="number" 
+                              type="number"
+                              placeholder="0"
                               value={item.val}
-                              onChange={(e) => item.setter(Number(e.target.value))}
-                              className="w-full pl-7 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm font-semibold text-gray-900" 
+                              onChange={(e) => item.setter(e.target.value === '' ? '' : Number(e.target.value))}
+                              className="w-full pl-7 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none text-sm font-semibold text-gray-900 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
                             />
                           </div>
+                          
+                          <button
+                            type="button"
+                            onClick={() => item.setter('')}
+                            className="p-2 bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 rounded-lg transition-colors flex items-center justify-center"
+                            title={`Clear ${item.label}`}
+                          >
+                            <Trash2 size={18} />
+                          </button>
+
                           <select className="bg-gray-50 border border-gray-200 rounded-lg px-2 py-2 text-[10px] font-medium outline-none text-gray-500">
                             <option>Monthly</option>
                             <option>Yearly</option>
@@ -193,7 +288,7 @@ export default function SalaryCalculator() {
                     ))}
 
                     <div className="p-4 bg-blue-50/30 rounded-lg mt-5 border border-blue-100/30 space-y-3">
-                      <div className="text-xs font-bold text-blue-900">Total Gross Income</div>
+                      <div className="text-sm font-bold text-blue-900">Total Gross Income</div>
                       <div className="flex justify-between items-center">
                         <div className="text-blue-700 font-black text-sm">€ {actualGrossMonthly.toLocaleString()} / month</div>
                         <div className="text-blue-600 font-black text-sm">€ {(actualGrossMonthly * 12).toLocaleString()} / year</div>
@@ -257,7 +352,7 @@ export default function SalaryCalculator() {
                     </div>
                   </div>
 
-                  <button className="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-200 transition-all flex items-center justify-center gap-4 mt-4">
+                  <button type="submit" className="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-200 transition-all flex items-center justify-center gap-4 mt-4">
                     <Calculator size={18} />
                     Calculate Net Salary
                   </button>
@@ -299,10 +394,10 @@ export default function SalaryCalculator() {
                   <Info size={14} className="text-blue-400" />
                 </div>
                 <div className="text-4xl font-black text-[#10B981] my-2">
-                  €{"\u00A0"}{netSalary.toLocaleString(undefined, {maximumFractionDigits: 0})}
+                  €{"\u00A0"}{displayNetSalary.toLocaleString(undefined, {maximumFractionDigits: 0})}
                   <span className="text-lg font-medium text-gray-400 ml-2">/ month</span>
                 </div>
-                <div className="text-gray-500 font-medium">€{"\u00A0"}{(netSalary * 12).toLocaleString()} / year</div>
+                <div className="text-gray-500 font-medium">€{"\u00A0"}{(displayNetSalary * 12).toLocaleString()} / year</div>
               </div>
               
               <div className="flex-shrink-0 ml-10">
@@ -317,10 +412,10 @@ export default function SalaryCalculator() {
                         <span className="w-3 h-3 rounded-full bg-green-500"></span>
                         <span className="text-gray-500">Net Salary</span>
                       </div>
-                      <span className="font-bold">71.3%</span>
+                      <span className="font-bold">{hasCalculated ? "71.3%" : "0%"}</span>
                     </div>
                     <div className="text-right text-xs text-gray-400">
-                      €{"\u00A0"}{netSalary.toLocaleString(undefined, {maximumFractionDigits: 0})}
+                      €{"\u00A0"}{displayNetSalary.toLocaleString(undefined, {maximumFractionDigits: 0})}
                     </div>
                   </div>
 
@@ -330,10 +425,10 @@ export default function SalaryCalculator() {
                         <span className="w-3 h-3 rounded-full bg-blue-600"></span>
                         <span className="text-gray-500">Total Tax</span>
                       </div>
-                      <span className="font-bold">28.7%</span>
+                      <span className="font-bold">{hasCalculated ? "28.7%" : "0%"}</span>
                     </div>
                     <div className="text-right text-xs text-gray-400">
-                      €{"\u00A0"}{totalTax.toLocaleString(undefined, {maximumFractionDigits: 0})}
+                      €{"\u00A0"}{displayTotalTax.toLocaleString(undefined, {maximumFractionDigits: 0})}
                     </div>
                   </div>
                 </div>
@@ -351,7 +446,7 @@ export default function SalaryCalculator() {
                     <span className="text-gray-600 font-medium flex items-center gap-2 text-xs">
                       <Wallet size={14} className="text-blue-500" /> Gross Salary
                     </span>
-                    <span className="font-bold text-gray-900 text-xs">€{"\u00A0"}{actualGrossMonthly.toLocaleString()}</span>
+                    <span className="font-bold text-gray-900 text-xs">€{"\u00A0"}{displayGrossMonthly.toLocaleString()}</span>
                   </div>
                   
                   <div 
@@ -362,7 +457,7 @@ export default function SalaryCalculator() {
                       <Calculator size={14} className="text-red-400" /> Total Tax
                     </span>
                     <div className="flex items-center gap-1">
-                      <span className="font-bold text-red-500 text-xs">- €{"\u00A0"}{totalTax.toLocaleString(undefined, {maximumFractionDigits: 0})}</span>
+                      <span className="font-bold text-red-500 text-xs">- €{"\u00A0"}{displayTotalTax.toLocaleString(undefined, {maximumFractionDigits: 0})}</span>
                       <ChevronUp size={12} className={`text-gray-400 transition-transform duration-200 ${isTaxOpen ? 'rotate-0' : 'rotate-180'}`} />
                     </div>
                   </div>
@@ -370,11 +465,11 @@ export default function SalaryCalculator() {
                   {isTaxOpen && (
                     <div className="bg-white px-3 py-2 space-y-3">
                       {[
-                        { label: 'State Income Tax', value: stateTax, icon: <Landmark size={12} className="text-indigo-400" /> },
-                        { label: 'Municipal Tax (Helsinki 17.00%)', value: municipalTax, icon: <Building2 size={12} className="text-orange-400" /> },
-                        { label: 'Pension Contribution (7.15%)', value: pension, icon: <Coins size={12} className="text-yellow-500" /> },
-                        { label: 'Unemployment Insurance (1.50%)', value: unemployment, icon: <ShieldCheck size={12} className="text-emerald-400" /> },
-                        ...(churchMember ? [{ label: 'Church Tax (1.0%)', value: churchTax, icon: <Church size={12} className="text-purple-400" /> }] : []),
+                        { label: 'State Income Tax', value: displayStateTax, icon: <Landmark size={12} className="text-indigo-400" /> },
+                        { label: `Municipal Tax (${displayMunicipalityRate.toFixed(2)}%)`, value: displayMunicipalTax, icon: <Building2 size={12} className="text-orange-400" /> },
+                        { label: 'Pension Contribution (7.15%)', value: displayPension, icon: <Coins size={12} className="text-yellow-500" /> },
+                        { label: 'Unemployment Insurance (1.50%)', value: displayUnemployment, icon: <ShieldCheck size={12} className="text-emerald-400" /> },
+                        ...(displayChurchMember ? [{ label: 'Church Tax (1.0%)', value: displayChurchTax, icon: <Church size={12} className="text-purple-400" /> }] : []),
                       ].map((item, idx) => (
                         <div key={idx} className="flex justify-between items-center text-[11px] pl-4">
                           <span className="text-gray-500 flex items-center gap-2">
@@ -391,7 +486,7 @@ export default function SalaryCalculator() {
                     <span className="text-[#10B981] font-bold flex items-center gap-2 text-xs">
                       <Banknote size={14} className="text-green-500" /> Net Salary
                     </span>
-                    <span className="font-bold text-[#10B981] text-xs">€{"\u00A0"}{netSalary.toLocaleString(undefined, {maximumFractionDigits: 0})}</span>
+                    <span className="font-bold text-[#10B981] text-xs">€{"\u00A0"}{displayNetSalary.toLocaleString(undefined, {maximumFractionDigits: 0})}</span>
                   </div>
                 </div>
               </div>
@@ -403,12 +498,12 @@ export default function SalaryCalculator() {
                 </div>
                 <div className="bg-[#F1F5F9] border border-slate-200 rounded-xl p-4 space-y-3">
                   {[
-                    { label: 'Tax Year', value: taxYear, icon: <Calendar size={12} className="text-blue-500" /> },
-                    { label: 'Municipality Tax Rate', value: `${municipalityRate.toFixed(2)}%`, icon: <Building2 size={12} className="text-orange-500" /> },
+                    { label: 'Tax Year', value: displayTaxYear, icon: <Calendar size={12} className="text-blue-500" /> },
+                    { label: 'Municipality Tax Rate', value: `${displayMunicipalityRate.toFixed(2)}%`, icon: <Building2 size={12} className="text-orange-500" /> },
                     { label: 'State Tax Method', value: 'Progressive', icon: <Scale size={12} className="text-indigo-500" /> },
                     { label: 'Pension Contribution', value: '7.15%', icon: <Coins size={12} className="text-yellow-600" /> },
                     { label: 'Unemployment Insurance', value: '1.50%', icon: <ShieldCheck size={12} className="text-emerald-500" /> },
-                    { label: 'Church Tax', value: churchMember ? '1.00%' : '0.00%', icon: <Church size={12} className="text-purple-500" /> },
+                    { label: 'Church Tax', value: displayChurchMember ? '1.00%' : '0.00%', icon: <Church size={12} className="text-purple-500" /> },
                   ].map((info, idx) => (
                     <div key={idx} className="flex justify-between items-center text-[11px]">
                       <span className="text-gray-500 font-medium flex items-center gap-2">
@@ -418,13 +513,13 @@ export default function SalaryCalculator() {
                     </div>
                   ))}
                   <div className="mt-4 pt-4 border-t border-gray-200 text-[10px] text-gray-400 leading-tight">
-                    This is an estimate based on {taxYear} tax rates and average deductions.
+                    This is an estimate based on {displayTaxYear} tax rates and average deductions.
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* How this is calculated - Updated Section */}
+            {/* How this is calculated  */}
             <div className="border border-gray-200 rounded-xl overflow-hidden shadow-sm mt-6">
               <div 
                 onClick={() => setIsCalcOpen(!isCalcOpen)}
@@ -448,7 +543,7 @@ export default function SalaryCalculator() {
                     </ol>
                   </div>
                   <div>
-                    <button className="px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-xs font-semibold text-blue-700 rounded-lg shadow-sm transition-all whitespace-nowrap">
+                    <button type="button" className="px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-xs font-semibold text-blue-700 rounded-lg shadow-sm transition-all whitespace-nowrap">
                       Show tax brackets used
                     </button>
                   </div>
@@ -456,7 +551,7 @@ export default function SalaryCalculator() {
               )}
             </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

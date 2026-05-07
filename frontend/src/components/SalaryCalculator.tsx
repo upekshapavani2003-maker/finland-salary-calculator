@@ -116,7 +116,7 @@ export default function SalaryCalculator() {
     setHasCalculated(false);
   };
 
-  // Determine values to display (show calculated state or 0)
+  // Determine values to display
   const displayNetSalary = hasCalculated && calculatedValues ? calculatedValues.netSalary : 0;
   const displayTotalTax = hasCalculated && calculatedValues ? calculatedValues.totalTax : 0;
   const displayGrossMonthly = hasCalculated && calculatedValues ? calculatedValues.grossMonthly : 0;
@@ -130,14 +130,14 @@ export default function SalaryCalculator() {
   const displayChurchMember = hasCalculated && calculatedValues ? calculatedValues.churchMember : churchMember;
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] py-12 px-4">
+    <div className="min-h-screen bg-[#F8FAFC] pt-2 pb-12 px-4">
       <div className="max-w-7xl mx-auto">
-        <form onSubmit={handleCalculate} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+        <form onSubmit={handleCalculate} className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
           
           {/* LEFT COLUMN: INPUTS */}
-          <div className="lg:col-span-5 bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex flex-col justify-start">
+          <div className="lg:col-span-5 bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex flex-col justify-start">
             <div>
-              <div className="flex gap-3 mb-10">
+              <div className="flex gap-3 mb-4">
                 <button 
                   type="button"
                   onClick={() => setSelectedMode('simple')}
@@ -166,6 +166,19 @@ export default function SalaryCalculator() {
               {/* MODE SELECTION RENDER LOGIC */}
               {selectedMode === 'simple' ? (
                 <div className="space-y-4">
+                  <div className="flex items-center justify-end gap-4 mb-1">
+                    <label className="text-sm text-gray-900 font-bold">Tax Year</label>
+                    <select 
+                      value={taxYear} 
+                      onChange={(e) => setTaxYear(e.target.value)}
+                      className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-[11px] font-semibold text-gray-500 outline-none"
+                    >
+                      <option value="2024">2024</option>
+                      <option value="2025">2025</option>
+                      <option value="2026">2026</option>
+                    </select>
+                  </div>
+
                   <div>
                     <label className="block text-sm font-bold text-gray-700 mb-3">Gross Salary</label>
                     <div className="flex gap-2 items-center">
@@ -175,10 +188,7 @@ export default function SalaryCalculator() {
                           type="number" 
                           placeholder="0"
                           value={grossSalary}
-                          onChange={(e) => {
-                            setGrossSalary(e.target.value === '' ? '' : Number(e.target.value));
-                            // Optional: immediately unset calculated state on edit if desired, or let it remain until recalculated
-                          }}
+                          onChange={(e) => setGrossSalary(e.target.value === '' ? '' : Number(e.target.value))}
                           className="w-full pl-10 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-semibold text-gray-900 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
                         />
                       </div>
@@ -243,9 +253,23 @@ export default function SalaryCalculator() {
                 </div>
               ) : (
                 /* Advanced Inputs UI */
-                <div className="space-y-6">
+                <div className="space-y-2">
+                  {/* Tax Year selection above Income Breakdown (Advanced Mode) */}
+                  <div className="flex items-center justify-end gap-4 mb-1">
+                    <label className="text-sm text-gray-900 font-bold">Tax Year</label>
+                    <select 
+                      value={taxYear} 
+                      onChange={(e) => setTaxYear(e.target.value)}
+                      className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-[11px] font-semibold text-gray-500 outline-none"
+                    >
+                      <option value="2024">2024</option>
+                      <option value="2025">2025</option>
+                      <option value="2026">2026</option>
+                    </select>
+                  </div>
+
                   <div>
-                    <div className="flex flex-col gap-1 mb-4">
+                    <div className="flex flex-col gap-1 mb-2">
                       <span className="text-sm font-bold text-gray-900">1. Income Breakdown</span>
                       <span className="text-[10px] text-gray-400 font-medium">Enter your income components before tax.</span>
                     </div>
@@ -256,7 +280,7 @@ export default function SalaryCalculator() {
                       { label: 'Bonuses', val: bonuses, setter: setBonuses },
                       { label: 'Allowances', val: allowances, setter: setAllowances }
                     ].map((item, index) => (
-                      <div key={index} className="flex items-center justify-between gap-4 mb-3">
+                      <div key={index} className="flex items-center justify-between gap-4 mb-2">
                         <label className="text-sm font-bold text-gray-700 w-1/3">{item.label}</label>
                         <div className="flex gap-2 flex-1">
                           <div className="relative flex-1">
@@ -287,7 +311,7 @@ export default function SalaryCalculator() {
                       </div>
                     ))}
 
-                    <div className="p-4 bg-blue-50/30 rounded-lg mt-5 border border-blue-100/30 space-y-3">
+                    <div className="p-3 bg-blue-50/30 rounded-lg mt-3 border border-blue-200/30 space-y-1">
                       <div className="text-sm font-bold text-blue-900">Total Gross Income</div>
                       <div className="flex justify-between items-center">
                         <div className="text-blue-700 font-black text-sm">€ {actualGrossMonthly.toLocaleString()} / month</div>
@@ -296,8 +320,8 @@ export default function SalaryCalculator() {
                     </div>
                   </div>
 
-                  <div className="pt-2 border-t border-gray-50">
-                    <div className="flex items-center gap-2 mb-4">
+                  <div className="pt-1 border-t border-gray-50">
+                    <div className="flex items-center gap-2 mb-2">
                       <span className="text-sm font-bold text-gray-900">2. Tax Settings</span>
                     </div>
 
@@ -317,11 +341,10 @@ export default function SalaryCalculator() {
                         </div>
                       </div>
 
-                      {/* Church Tax Section */}
-                      <div className="border-t border-gray-100 pt-4">
+                      <div className="border-t border-gray-100 pt-0">
                         <label className="text-sm text-gray-900 font-bold block mb-2">Church Tax</label>
                         <div className="flex items-center justify-between">
-                          <div className="flex gap-6">
+                          <div className="flex gap-16">
                             <label className="flex items-center gap-2 cursor-pointer">
                               <input type="radio" checked={churchMember} onChange={() => setChurchMember(true)} className="w-4 h-4 text-blue-600" />
                               <span className="text-xs font-medium text-gray-600">Yes (1.00%)</span>
@@ -331,22 +354,6 @@ export default function SalaryCalculator() {
                               <span className="text-xs font-medium text-gray-600">No</span>
                             </label>
                           </div>
-                        </div>
-                      </div>
-
-                      {/* Tax Year Section */}
-                      <div className="border-t border-gray-100 pt-4">
-                        <div className="flex items-center justify-between">
-                          <label className="text-sm text-gray-900 font-bold">Tax Year</label>
-                          <select 
-                            value={taxYear} 
-                            onChange={(e) => setTaxYear(e.target.value)}
-                            className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-700 outline-none"
-                          >
-                            <option value="2024">2024</option>
-                            <option value="2025">2025</option>
-                            <option value="2026">2026</option>
-                          </select>
                         </div>
                       </div>
                     </div>
@@ -519,7 +526,6 @@ export default function SalaryCalculator() {
               </div>
             </div>
 
-            {/* How this is calculated  */}
             <div className="border border-gray-200 rounded-xl overflow-hidden shadow-sm mt-6">
               <div 
                 onClick={() => setIsCalcOpen(!isCalcOpen)}
@@ -537,15 +543,7 @@ export default function SalaryCalculator() {
                   <div>
                     <ol className="list-decimal pl-4 space-y-2 text-xs text-gray-600 font-medium">
                       <li>Your gross income is calculated from all income components (annual).</li>
-                      <li>Social security contributions (pension + unemployment) are deducted.</li>
-                      <li>Remaining income is taxed using progressive state tax rates.</li>
-                      <li>Municipal and church taxes are calculated on the taxable income.</li>
                     </ol>
-                  </div>
-                  <div>
-                    <button type="button" className="px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-xs font-semibold text-blue-700 rounded-lg shadow-sm transition-all whitespace-nowrap">
-                      Show tax brackets used
-                    </button>
                   </div>
                 </div>
               )}

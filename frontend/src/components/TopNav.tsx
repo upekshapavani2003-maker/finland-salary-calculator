@@ -7,6 +7,15 @@ interface TopNavProps {
 }
 
 export default function TopNav({ activeTab, setActiveTab }: TopNavProps) {
+  // Helper function to handle button styling
+  const getButtonClass = (tabName: string) => {
+    return `px-3 py-2 text-sm font-medium border-b-2 transition-colors duration-150 ${
+      activeTab === tabName 
+        ? 'border-blue-600 text-blue-600 font-semibold' 
+        : 'border-transparent text-gray-700 hover:text-gray-900 hover:border-gray-300'
+    }`;
+  };
+
   return (
     <header className="bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -26,39 +35,31 @@ export default function TopNav({ activeTab, setActiveTab }: TopNavProps) {
           <nav className="hidden md:flex space-x-8">
             <button 
               onClick={() => setActiveTab('calculator')}
-              className={`px-3 py-2 text-sm font-medium border-b-2 transition-colors duration-150 ${
-                activeTab === 'calculator' 
-                  ? 'border-blue-600 text-blue-600 font-semibold' 
-                  : 'border-transparent text-gray-700 hover:text-gray-900 hover:border-gray-300'
-              }`}
+              className={getButtonClass('calculator')}
             >
               Calculator
             </button>
             <button 
               onClick={() => setActiveTab('how-it-works')}
-              className={`px-3 py-2 text-sm font-medium border-b-2 transition-colors duration-150 ${
-                activeTab === 'how-it-works' 
-                  ? 'border-blue-600 text-blue-600 font-semibold' 
-                  : 'border-transparent text-gray-700 hover:text-gray-900 hover:border-gray-300'
-              }`}
+              className={getButtonClass('how-it-works')}
             >
               How it works
             </button>
             <button 
               onClick={() => setActiveTab('salary-by-city')}
-              className="text-gray-700 border-transparent hover:text-gray-900 px-3 py-2 text-sm font-medium border-b-2"
+              className={getButtonClass('salary-by-city')}
             >
               Salary by City
             </button>
             <button 
               onClick={() => setActiveTab('guides')}
-              className="text-gray-700 border-transparent hover:text-gray-900 px-3 py-2 text-sm font-medium border-b-2"
+              className={getButtonClass('guides')}
             >
               Guides
             </button>
             <button 
               onClick={() => setActiveTab('about')}
-              className="text-gray-700 border-transparent hover:text-gray-900 px-3 py-2 text-sm font-medium border-b-2"
+              className={getButtonClass('about')}
             >
               About
             </button>
@@ -90,14 +91,14 @@ export default function TopNav({ activeTab, setActiveTab }: TopNavProps) {
           </div>
         </div>
 
-        {/* Mobile menu - hidden by default */}
+        {/* Mobile menu - Logic added to trigger all tabs */}
         <div className="hidden md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <button onClick={() => setActiveTab('calculator')} className="text-gray-700 hover:text-gray-900 block px-3 py-2 text-base font-medium">Calculator</button>
-            <button onClick={() => setActiveTab('how-it-works')} className="text-gray-700 hover:text-gray-900 block px-3 py-2 text-base font-medium">How it works</button>
-            <button className="text-gray-700 hover:text-gray-900 block px-3 py-2 text-base font-medium">Salary by City</button>
-            <button className="text-gray-700 hover:text-gray-900 block px-3 py-2 text-base font-medium">Guides</button>
-            <button className="text-gray-700 hover:text-gray-900 block px-3 py-2 text-base font-medium">About</button>
+            <button onClick={() => setActiveTab('calculator')} className="text-gray-700 hover:text-gray-900 block px-3 py-2 text-base font-medium w-full text-left">Calculator</button>
+            <button onClick={() => setActiveTab('how-it-works')} className="text-gray-700 hover:text-gray-900 block px-3 py-2 text-base font-medium w-full text-left">How it works</button>
+            <button onClick={() => setActiveTab('salary-by-city')} className="text-gray-700 hover:text-gray-900 block px-3 py-2 text-base font-medium w-full text-left">Salary by City</button>
+            <button onClick={() => setActiveTab('guides')} className="text-gray-700 hover:text-gray-900 block px-3 py-2 text-base font-medium w-full text-left">Guides</button>
+            <button onClick={() => setActiveTab('about')} className="text-gray-700 hover:text-gray-900 block px-3 py-2 text-base font-medium w-full text-left">About</button>
           </div>
         </div>
       </div>

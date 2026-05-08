@@ -26,14 +26,14 @@ export default function SalaryCalculator() {
   // State to check if the user has calculated the results
   const [hasCalculated, setHasCalculated] = useState<boolean>(false);
 
-  // Input states (blank by default as requested)
+  // Input states
   const [grossSalary, setGrossSalary] = useState<number | ''>('');
   const [salaryPeriod, setSalaryPeriod] = useState<'Monthly' | 'Yearly'>('Monthly');
   const [selectedMunicipality, setSelectedMunicipality] = useState<string>('Helsinki (17.00%)');
   const [churchMember, setChurchMember] = useState<boolean>(false);
   const [selectedMode, setSelectedMode] = useState<'simple' | 'advanced'>('simple');
   
-  // Advanced Mode Sub-states (blank by default)
+  // Advanced Mode Sub-states
   const [baseSalary, setBaseSalary] = useState<number | ''>('');
   const [overtimePay, setOvertimePay] = useState<number | ''>('');
   const [bonuses, setBonuses] = useState<number | ''>('');
@@ -43,7 +43,7 @@ export default function SalaryCalculator() {
   const [isTaxOpen, setIsTaxOpen] = useState<boolean>(true);
   const [isCalcOpen, setIsCalcOpen] = useState<boolean>(false);
 
-  // States to hold the calculated results only after submission
+  // States to hold the calculated results
   const [calculatedValues, setCalculatedValues] = useState<{
     grossMonthly: number;
     netSalary: number;
@@ -58,14 +58,14 @@ export default function SalaryCalculator() {
     churchMember: boolean;
   } | null>(null);
 
-  // Helper values to safely use in calculations
+  // Helper values
   const parsedGrossSalary = typeof grossSalary === 'number' ? grossSalary : 0;
   const parsedBaseSalary = typeof baseSalary === 'number' ? baseSalary : 0;
   const parsedOvertime = typeof overtimePay === 'number' ? overtimePay : 0;
   const parsedBonuses = typeof bonuses === 'number' ? bonuses : 0;
   const parsedAllowances = typeof allowances === 'number' ? allowances : 0;
 
-  // Logic for UI display
+  // Logic
   const municipalityRate = parseFloat(selectedMunicipality.match(/\(([\d.]+)%\)/)?.[1] || '17.00');
   const pensionRate = 7.15;
   const unemploymentRate = 1.50;
@@ -105,7 +105,6 @@ export default function SalaryCalculator() {
     setHasCalculated(true);
   };
 
-  // Clear function to reset inputs
   const handleClear = () => {
     setGrossSalary('');
     setBaseSalary('');
@@ -116,7 +115,7 @@ export default function SalaryCalculator() {
     setHasCalculated(false);
   };
 
-  // Determine values to display
+  // Determine display values
   const displayNetSalary = hasCalculated && calculatedValues ? calculatedValues.netSalary : 0;
   const displayTotalTax = hasCalculated && calculatedValues ? calculatedValues.totalTax : 0;
   const displayGrossMonthly = hasCalculated && calculatedValues ? calculatedValues.grossMonthly : 0;
@@ -128,6 +127,9 @@ export default function SalaryCalculator() {
   const displayMunicipalityRate = hasCalculated && calculatedValues ? calculatedValues.municipalityRate : municipalityRate;
   const displayTaxYear = hasCalculated && calculatedValues ? calculatedValues.taxYear : taxYear;
   const displayChurchMember = hasCalculated && calculatedValues ? calculatedValues.churchMember : churchMember;
+
+  const taxPercentage = displayGrossMonthly > 0 ? (displayTotalTax / displayGrossMonthly) * 100 : 0;
+  const netPercentage = displayGrossMonthly > 0 ? (displayNetSalary / displayGrossMonthly) * 100 : 0;
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] pt-2 pb-12 px-4">
@@ -163,7 +165,6 @@ export default function SalaryCalculator() {
                 </button>
               </div>
 
-              {/* MODE SELECTION RENDER LOGIC */}
               {selectedMode === 'simple' ? (
                 <div className="space-y-4">
                   <div className="flex items-center justify-end gap-4 mb-1">
@@ -252,9 +253,7 @@ export default function SalaryCalculator() {
                   </div>
                 </div>
               ) : (
-                /* Advanced Inputs UI */
                 <div className="space-y-2">
-                  {/* Tax Year selection above Income Breakdown (Advanced Mode) */}
                   <div className="flex items-center justify-end gap-4 mb-1">
                     <label className="text-sm text-gray-900 font-bold">Tax Year</label>
                     <select 
@@ -419,7 +418,7 @@ export default function SalaryCalculator() {
                         <span className="w-3 h-3 rounded-full bg-green-500"></span>
                         <span className="text-gray-500">Net Salary</span>
                       </div>
-                      <span className="font-bold">{hasCalculated ? "71.3%" : "0%"}</span>
+                      <span className="font-bold">{hasCalculated ? `${netPercentage.toFixed(1)}%` : "0%"}</span>
                     </div>
                     <div className="text-right text-xs text-gray-400">
                       €{"\u00A0"}{displayNetSalary.toLocaleString(undefined, {maximumFractionDigits: 0})}
@@ -432,7 +431,7 @@ export default function SalaryCalculator() {
                         <span className="w-3 h-3 rounded-full bg-blue-600"></span>
                         <span className="text-gray-500">Total Tax</span>
                       </div>
-                      <span className="font-bold">{hasCalculated ? "28.7%" : "0%"}</span>
+                      <span className="font-bold">{hasCalculated ? `${taxPercentage.toFixed(1)}%` : "0%"}</span>
                     </div>
                     <div className="text-right text-xs text-gray-400">
                       €{"\u00A0"}{displayTotalTax.toLocaleString(undefined, {maximumFractionDigits: 0})}
@@ -526,6 +525,7 @@ export default function SalaryCalculator() {
               </div>
             </div>
 
+            {/* UPDATED "HOW THIS IS CALCULATED" SECTION */}
             <div className="border border-gray-200 rounded-xl overflow-hidden shadow-sm mt-6">
               <div 
                 onClick={() => setIsCalcOpen(!isCalcOpen)}
@@ -543,8 +543,17 @@ export default function SalaryCalculator() {
                   <div>
                     <ol className="list-decimal pl-4 space-y-2 text-xs text-gray-600 font-medium">
                       <li>Your gross income is calculated from all income components (annual).</li>
+                      <li>Social security contributions (pension + unemployment) are deducted.</li>
+                      <li>Remaining income is taxed using progressive state tax rates.</li>
+                      <li>Municipal and church taxes are calculated on the taxable income.</li>
                     </ol>
                   </div>
+                  <button 
+                    type="button"
+                    className="px-4 py-2 border border-gray-200 rounded-lg text-xs font-bold text-blue-700 hover:bg-gray-50 transition-colors whitespace-nowrap"
+                  >
+                    Show tax brackets used
+                  </button>
                 </div>
               )}
             </div>

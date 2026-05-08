@@ -5,8 +5,8 @@ import SalaryCalculator from '@/components/SalaryCalculator';
 import InfoCards from '@/components/InfoCards';
 import HowItWorks from '../components/HowItWorks';
 import SalaryByCity from '@/components/SalaryByCity';
-// Import the new component (make sure to create this file)
 import GuidesContent from '@/components/GuidesContent'; 
+import AboutContent from '@/components/AboutContent';
 
 export default function Home() {
   // activeTab now supports 'guides'
@@ -40,6 +40,13 @@ export default function Home() {
         {activeTab === 'guides' && (
           <GuidesContent />
         )}
+
+        {/* Tab 5: About Screen */}
+        {activeTab === 'about' && (
+          <AboutContent />
+        )}
+
+
       </main>
 
       <footer className="bg-white border-t border-gray-100 py-8 text-center text-xs text-gray-400 mt-auto">

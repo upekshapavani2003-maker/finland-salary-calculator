@@ -12,7 +12,6 @@ const GuidesPage = () => {
       title: 'How taxes work in Finland — a simple overview',
       description: "A clear, jargon-free explanation of Finland's two-tier tax system: national income tax and municipal tax.",
       category: 'Tax basics',
-      readTime: '5 MIN READ',
       icon: <BookOpen className="text-blue-600" size={20} />,
       bgColor: 'bg-blue-50'
     },
@@ -20,7 +19,6 @@ const GuidesPage = () => {
       title: 'Moving to Finland? Your tax guide for newcomers',
       description: 'Understand tax residency rules, the progressive tax card, and how to register with the Finnish Tax Administration.',
       category: 'Expats',
-      readTime: '8 MIN READ',
       icon: <Plane className="text-orange-600" size={20} />,
       bgColor: 'bg-orange-50'
     },
@@ -28,7 +26,6 @@ const GuidesPage = () => {
       title: 'Self-employment taxes in Finland explained',
       description: 'How YEL pension, VAT, and income tax work if you run your own business or work as a sole trader.',
       category: 'Freelancers',
-      readTime: '6 MIN READ',
       icon: <Briefcase className="text-emerald-600" size={20} />,
       bgColor: 'bg-emerald-50'
     },
@@ -36,7 +33,6 @@ const GuidesPage = () => {
       title: 'Tax deductions you might be missing',
       description: 'Home-office expenses, commute deductions, union fees, and more — legitimate ways to reduce your taxable income.',
       category: 'Deductions',
-      readTime: '6 MIN READ',
       icon: <Receipt className="text-slate-600" size={20} />,
       bgColor: 'bg-slate-50'
     }
@@ -106,7 +102,7 @@ const GuidesPage = () => {
 
       {/* Featured Guides Section */}
       <div className="mb-16">
-        <h3 className="text-blue-600 text-[10px] font-bold uppercase tracking-widest mb-6">Featured Guides</h3>
+        <h3 className="text-blue-600 text-sm font-bold uppercase tracking-widest mb-6">Featured Guides</h3>
         <div className="space-y-4">
           {guides.map((guide, index) => (
             <div key={index} className="group bg-white border border-gray-100 rounded-xl p-5 flex items-start gap-5 hover:shadow-md transition-shadow cursor-pointer">
@@ -114,14 +110,13 @@ const GuidesPage = () => {
                 {guide.icon}
               </div>
               <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-blue-600 text-[10px] font-bold uppercase tracking-tight">{guide.category}</span>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-blue-600 text-xs font-bold uppercase tracking-tight">{guide.category}</span>
                   <span className="text-gray-300 text-[10px]">•</span>
-                  <span className="text-gray-400 text-[10px] font-bold uppercase tracking-tight">{guide.readTime}</span>
                 </div>
                 <h4 className="text-gray-900 font-bold text-base group-hover:text-blue-600 transition-colors">{guide.title}</h4>
                 <p className="text-gray-500 text-xs mt-1 leading-relaxed">{guide.description}</p>
-                <button className="text-blue-600 text-[11px] font-bold mt-3 flex items-center gap-1">
+                <button className="text-blue-600 text-[12px] font-bold mt-3 flex items-center gap-2">
                   Read guide <span className="text-xs">→</span>
                 </button>
               </div>
@@ -132,7 +127,7 @@ const GuidesPage = () => {
 
       {/* FAQ Section */}
       <div className="max-w-4xl">
-        <h3 className="text-blue-600 text-[10px] font-bold uppercase tracking-widest mb-6">Frequently Asked Questions</h3>
+        <h3 className="text-blue-600 text-sm font-bold uppercase tracking-widest mb-6">Frequently Asked Questions</h3>
         <div className="divide-y divide-gray-100">
           {faqs.map((faq, index) => (
             <div key={index} className="py-4">

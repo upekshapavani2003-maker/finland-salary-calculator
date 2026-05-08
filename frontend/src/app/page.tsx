@@ -5,13 +5,16 @@ import SalaryCalculator from '@/components/SalaryCalculator';
 import InfoCards from '@/components/InfoCards';
 import HowItWorks from '../components/HowItWorks';
 import SalaryByCity from '@/components/SalaryByCity';
+// Import the new component (make sure to create this file)
+import GuidesContent from '@/components/GuidesContent'; 
 
 export default function Home() {
+  // activeTab now supports 'guides'
   const [activeTab, setActiveTab] = useState('calculator');
 
   return (
-    <div className="bg-white min-h-screen flex flex-col">
-      {/* TopNav handles the state switching for all three tabs */}
+    <div className="bg-[#F8FAFC] min-h-screen flex flex-col">
+      {/* Ensure your TopNav component has a button that sets 'guides' */}
       <TopNav activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <main className="flex-grow">
@@ -32,10 +35,21 @@ export default function Home() {
         {activeTab === 'salary-by-city' && (
           <SalaryByCity />
         )}
+
+        {/* Tab 4: Guides & Resources */}
+        {activeTab === 'guides' && (
+          <GuidesContent />
+        )}
       </main>
 
-      <footer className="bg-white border-t border-gray-100 py-6 text-center text-xs text-gray-400">
-        <div>&copy; 2026 Finland Salary Calculator. All rights reserved.</div>
+      <footer className="bg-white border-t border-gray-100 py-8 text-center text-xs text-gray-400 mt-auto">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="mb-2">© 2026 Finland Salary Calculator. All rights reserved.</div>
+          <p className="max-w-2xl mx-auto leading-relaxed">
+            Disclaimer: This calculator is for estimation purposes only. Actual tax rates may vary 
+            based on individual circumstances and official decisions by the Finnish Tax Administration.
+          </p>
+        </div>
       </footer>
     </div>
   );

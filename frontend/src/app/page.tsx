@@ -1,10 +1,12 @@
 "use client";
+
 import { useState } from 'react';
 import TopNav from '@/components/TopNav';
 import SalaryCalculator from '@/components/SalaryCalculator';
 import InfoCards from '@/components/InfoCards';
-import HowItWorks from '../components/HowItWorks';
-import HowTaxesWork from '@/components/HowTaxesWork';  // ADD IMPORT
+import HowItWorks from '@/components/HowItWorks';
+import HowTaxesWork from '@/components/HowTaxesWork';
+import SalaryByCityScreen from '@/components/SalaryByCityScreen';
 import SalaryByCity from '@/components/SalaryByCity';
 import GuidesContent from '@/components/GuidesContent';
 import AboutContent from '@/components/AboutContent';
@@ -17,29 +19,41 @@ export default function Home() {
       <TopNav activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <main className="flex-grow">
+
+        {/* Tab: Calculator & Info Cards */}
         {activeTab === 'calculator' && (
           <>
             <SalaryCalculator />
-            {/* PASS onNavigate prop */}
             <InfoCards onNavigate={setActiveTab} />
           </>
         )}
 
+        {/* Tab: How It Works (top nav) */}
         {activeTab === 'how-it-works' && <HowItWorks />}
 
-        {/* ADD THIS NEW TAB */}
+        {/* Tab: How Taxes Work (from info card 1) */}
         {activeTab === 'how-taxes-work' && <HowTaxesWork />}
 
+        {/* Tab: Salary By City Screen (from info card 2) */}
+        {activeTab === 'salary-by-city-screen' && <SalaryByCityScreen />}
+
+        {/* Tab: Salary By City (top nav) */}
         {activeTab === 'salary-by-city' && <SalaryByCity />}
+
+        {/* Tab: Guides */}
         {activeTab === 'guides' && <GuidesContent />}
+
+        {/* Tab: About */}
         {activeTab === 'about' && <AboutContent />}
+
       </main>
 
-      <footer className="bg-white border-t border-gray-100 py-8 text-center text-xs text-gray-400 mt-auto">
+      <footer className="bg-white border-t border-gray-100 py-2 text-center text-xs text-gray-400 mt-auto">
         <div className="max-w-7xl mx-auto px-4">
           <div className="mb-2">© 2026 Finland Salary Calculator. All rights reserved.</div>
           <p className="max-w-2xl mx-auto leading-relaxed">
-            Disclaimer: This calculator is for estimation purposes only.
+            Disclaimer: This calculator is for estimation purposes only. Actual tax rates may vary
+            based on individual circumstances and official decisions by the Finnish Tax Administration.
           </p>
         </div>
       </footer>

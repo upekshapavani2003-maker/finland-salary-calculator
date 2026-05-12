@@ -8,6 +8,7 @@ import HowItWorks from '@/components/HowItWorks';
 import HowTaxesWork from '@/components/HowTaxesWork';
 import SalaryByCityScreen from '@/components/SalaryByCityScreen';
 import SalaryByCity from '@/components/SalaryByCity';
+import AverageSalariesByJob from '@/components/AverageSalariesByJob';
 import GuidesContent from '@/components/GuidesContent';
 import AboutContent from '@/components/AboutContent';
 
@@ -31,14 +32,17 @@ export default function Home() {
         {/* Tab: How It Works (top nav) */}
         {activeTab === 'how-it-works' && <HowItWorks />}
 
-        {/* Tab: How Taxes Work (from info card 1) */}
+        {/* Tab: How Taxes Work (info card 1) */}
         {activeTab === 'how-taxes-work' && <HowTaxesWork />}
 
-        {/* Tab: Salary By City Screen (from info card 2) */}
+        {/* Tab: Salary By City Screen (info card 2) */}
         {activeTab === 'salary-by-city-screen' && <SalaryByCityScreen />}
 
         {/* Tab: Salary By City (top nav) */}
         {activeTab === 'salary-by-city' && <SalaryByCity />}
+
+        {/* Tab: Average Salaries By Job (info card 3) */}
+        {activeTab === 'average-salaries' && <AverageSalariesByJob />}
 
         {/* Tab: Guides */}
         {activeTab === 'guides' && <GuidesContent />}

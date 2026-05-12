@@ -9,6 +9,7 @@ import HowTaxesWork from '@/components/HowTaxesWork';
 import SalaryByCityScreen from '@/components/SalaryByCityScreen';
 import SalaryByCity from '@/components/SalaryByCity';
 import AverageSalariesByJob from '@/components/AverageSalariesByJob';
+import FAQsScreen from '@/components/FAQsScreen';
 import GuidesContent from '@/components/GuidesContent';
 import AboutContent from '@/components/AboutContent';
 
@@ -43,6 +44,9 @@ export default function Home() {
 
         {/* Tab: Average Salaries By Job (info card 3) */}
         {activeTab === 'average-salaries' && <AverageSalariesByJob />}
+
+        {/* Tab: FAQs (info card 4) */}
+        {activeTab === 'faqs' && <FAQsScreen />}
 
         {/* Tab: Guides */}
         {activeTab === 'guides' && <GuidesContent />}

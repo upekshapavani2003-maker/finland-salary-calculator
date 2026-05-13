@@ -12,6 +12,9 @@ import AverageSalariesByJob from '@/components/AverageSalariesByJob';
 import FAQsScreen from '@/components/FAQsScreen';
 import GuidesContent from '@/components/GuidesContent';
 import AboutContent from '@/components/AboutContent';
+import CookieSettings from '@/components/CookieSettings';
+import DisclaimerScreen from '@/components/DisclaimerScreen';
+import BottomNav from '@/components/BottomNav';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('calculator');
@@ -54,6 +57,12 @@ export default function Home() {
         {/* Tab: About */}
         {activeTab === 'about' && <AboutContent />}
 
+        {/* Tab: Cookie Settings (bottom nav) */}
+        {activeTab === 'cookie-settings' && <CookieSettings />}
+
+        {/* Tab: Disclaimer (bottom nav) */}
+        {activeTab === 'disclaimer' && <DisclaimerScreen />}
+
       </main>
 
       <footer className="bg-white border-t border-gray-100 py-2 text-center text-xs text-gray-400 mt-auto">
@@ -65,6 +74,8 @@ export default function Home() {
           </p>
         </div>
       </footer>
+
+      <BottomNav setActiveTab={setActiveTab} />
     </div>
   );
 }

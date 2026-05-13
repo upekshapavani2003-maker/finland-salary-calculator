@@ -37,7 +37,7 @@ const AboutContent = () => {
       {/* Header Section */}
       <div className="bg-blue-700 rounded-lg shadow-sm p-8 text-white mb-8">
         <div className="max-w-3xl">
-          <span className="text-blue-200 text-xs font-semibold uppercase tracking-wider bg-blue-700 px-2.5 py-1 rounded">
+          <span className="text-blue-200 text-xs font-semibold uppercase tracking-wider bg-blue-600 px-2.5 py-1 rounded">
             Our Story
           </span>
           <h2 className="text-3xl font-bold mt-4 mb-2">Built for clarity, not complexity</h2>

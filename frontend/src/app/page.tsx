@@ -14,6 +14,7 @@ import GuidesContent from '@/components/GuidesContent';
 import AboutContent from '@/components/AboutContent';
 import CookieSettings from '@/components/CookieSettings';
 import DisclaimerScreen from '@/components/DisclaimerScreen';
+import ContactScreen from '@/components/ContactScreen';
 import BottomNav from '@/components/BottomNav';
 
 export default function Home() {
@@ -62,6 +63,9 @@ export default function Home() {
 
         {/* Tab: Disclaimer (bottom nav) */}
         {activeTab === 'disclaimer' && <DisclaimerScreen />}
+
+        {/* Tab: Contact (bottom nav) */}
+        {activeTab === 'contact' && <ContactScreen />}
 
       </main>
 

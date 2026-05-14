@@ -15,6 +15,7 @@ import AboutContent from '@/components/AboutContent';
 import CookieSettings from '@/components/CookieSettings';
 import DisclaimerScreen from '@/components/DisclaimerScreen';
 import ContactScreen from '@/components/ContactScreen';
+import PrivacyPolicyScreen from '@/components/PrivacyPolicyScreen';
 import BottomNav from '@/components/BottomNav';
 
 export default function Home() {
@@ -66,6 +67,9 @@ export default function Home() {
 
         {/* Tab: Contact (bottom nav) */}
         {activeTab === 'contact' && <ContactScreen />}
+
+        {/* Tab: Privacy Policy (bottom nav) */}
+        {activeTab === 'privacy-policy' && <PrivacyPolicyScreen />}
 
       </main>
 

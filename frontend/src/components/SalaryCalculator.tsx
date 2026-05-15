@@ -23,27 +23,23 @@ import {
 } from 'lucide-react';
 
 export default function SalaryCalculator() {
-  // State to check if the user has calculated the results
   const [hasCalculated, setHasCalculated] = useState<boolean>(false);
 
-  // Input states
   const [grossSalary, setGrossSalary] = useState<number | ''>('');
   const [salaryPeriod, setSalaryPeriod] = useState<'Monthly' | 'Yearly'>('Monthly');
   const [selectedMunicipality, setSelectedMunicipality] = useState<string>('Helsinki (17.00%)');
   const [churchMember, setChurchMember] = useState<boolean>(false);
   const [selectedMode, setSelectedMode] = useState<'simple' | 'advanced'>('simple');
   
-  // Advanced Mode Sub-states
   const [baseSalary, setBaseSalary] = useState<number | ''>('');
   const [overtimePay, setOvertimePay] = useState<number | ''>('');
   const [bonuses, setBonuses] = useState<number | ''>('');
   const [allowances, setAllowances] = useState<number | ''>('');
   const [taxYear, setTaxYear] = useState<string>('2024');
 
-  const [isTaxOpen, setIsTaxOpen] = useState<boolean>(true);
+  const [isTaxOpen, setIsTaxOpen] = useState<boolean>(false);
   const [isCalcOpen, setIsCalcOpen] = useState<boolean>(false);
 
-  // States to hold the calculated results
   const [calculatedValues, setCalculatedValues] = useState<{
     grossMonthly: number;
     netSalary: number;
@@ -58,14 +54,12 @@ export default function SalaryCalculator() {
     churchMember: boolean;
   } | null>(null);
 
-  // Helper values
   const parsedGrossSalary = typeof grossSalary === 'number' ? grossSalary : 0;
   const parsedBaseSalary = typeof baseSalary === 'number' ? baseSalary : 0;
   const parsedOvertime = typeof overtimePay === 'number' ? overtimePay : 0;
   const parsedBonuses = typeof bonuses === 'number' ? bonuses : 0;
   const parsedAllowances = typeof allowances === 'number' ? allowances : 0;
 
-  // Logic
   const municipalityRate = parseFloat(selectedMunicipality.match(/\(([\d.]+)%\)/)?.[1] || '17.00');
   const pensionRate = 7.15;
   const unemploymentRate = 1.50;
@@ -115,7 +109,6 @@ export default function SalaryCalculator() {
     setHasCalculated(false);
   };
 
-  // Determine display values
   const displayNetSalary = hasCalculated && calculatedValues ? calculatedValues.netSalary : 0;
   const displayTotalTax = hasCalculated && calculatedValues ? calculatedValues.totalTax : 0;
   const displayGrossMonthly = hasCalculated && calculatedValues ? calculatedValues.grossMonthly : 0;
@@ -220,7 +213,7 @@ export default function SalaryCalculator() {
                       <select 
                         value={selectedMunicipality}
                         onChange={(e) => setSelectedMunicipality(e.target.value)}
-                        className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-4 outline-none text-sm text-gray-500"
+                        className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-4 outline-none text-sm text-gray-500 font-bold"
                       >
                         {municipalities.map(m => <option key={m}>{m}</option>)}
                       </select>
@@ -332,7 +325,7 @@ export default function SalaryCalculator() {
                           <select 
                             value={selectedMunicipality}
                             onChange={(e) => setSelectedMunicipality(e.target.value)}
-                            className="w-full pl-9 pr-4 py-3 bg-gray-50 text-gray-500 border border-gray-200 rounded-lg text-xs font-medium outline-none appearance-none"
+                            className="w-full pl-9 pr-4 py-3 bg-gray-50 text-gray-500 border border-gray-200 rounded-lg text-xs font-bold outline-none appearance-none"
                           >
                             {municipalities.map(m => <option key={m}>{m}</option>)}
                           </select>
@@ -455,6 +448,7 @@ export default function SalaryCalculator() {
                     <span className="font-bold text-gray-900 text-xs">€{"\u00A0"}{displayGrossMonthly.toLocaleString()}</span>
                   </div>
                   
+                  {/* Total Tax row — click to expand breakdown */}
                   <div 
                     onClick={() => setIsTaxOpen(!isTaxOpen)}
                     className="flex justify-between p-3 bg-gray-50/50 border-b border-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
@@ -464,12 +458,13 @@ export default function SalaryCalculator() {
                     </span>
                     <div className="flex items-center gap-1">
                       <span className="font-bold text-red-500 text-xs">- €{"\u00A0"}{displayTotalTax.toLocaleString(undefined, {maximumFractionDigits: 0})}</span>
-                      <ChevronUp size={12} className={`text-gray-400 transition-transform duration-200 ${isTaxOpen ? 'rotate-0' : 'rotate-180'}`} />
+                      <ChevronDown size={12} className={`text-gray-400 transition-transform duration-200 ${isTaxOpen ? 'rotate-180' : 'rotate-0'}`} />
                     </div>
                   </div>
 
+                  {/* Collapsible tax breakdown — hidden by default */}
                   {isTaxOpen && (
-                    <div className="bg-white px-3 py-2 space-y-3">
+                    <div className="bg-white px-3 py-2 space-y-3 border-b border-gray-50">
                       {[
                         { label: 'State Income Tax', value: displayStateTax, icon: <Landmark size={12} className="text-indigo-400" /> },
                         { label: `Municipal Tax (${displayMunicipalityRate.toFixed(2)}%)`, value: displayMunicipalTax, icon: <Building2 size={12} className="text-orange-400" /> },
@@ -525,7 +520,7 @@ export default function SalaryCalculator() {
               </div>
             </div>
 
-            {/* UPDATED "HOW THIS IS CALCULATED" SECTION */}
+            {/* HOW THIS IS CALCULATED SECTION */}
             <div className="border border-gray-200 rounded-xl overflow-hidden shadow-sm mt-6">
               <div 
                 onClick={() => setIsCalcOpen(!isCalcOpen)}

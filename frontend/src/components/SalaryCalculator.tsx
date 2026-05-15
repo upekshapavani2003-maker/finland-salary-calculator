@@ -206,7 +206,7 @@ export default function SalaryCalculator() {
                       <select 
                         value={salaryPeriod}
                         onChange={(e) => setSalaryPeriod(e.target.value as any)}
-                        className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-4 font-medium outline-none text-gray-700 text-sm"
+                        className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-4 font-medium outline-none text-gray-500 text-sm"
                       >
                         <option>Monthly</option>
                         <option>Yearly</option>
@@ -220,7 +220,7 @@ export default function SalaryCalculator() {
                       <select 
                         value={selectedMunicipality}
                         onChange={(e) => setSelectedMunicipality(e.target.value)}
-                        className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-4 outline-none text-sm text-gray-700"
+                        className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-4 outline-none text-sm text-gray-500"
                       >
                         {municipalities.map(m => <option key={m}>{m}</option>)}
                       </select>
@@ -332,7 +332,7 @@ export default function SalaryCalculator() {
                           <select 
                             value={selectedMunicipality}
                             onChange={(e) => setSelectedMunicipality(e.target.value)}
-                            className="w-full pl-9 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-xs font-medium outline-none appearance-none"
+                            className="w-full pl-9 pr-4 py-3 bg-gray-50 text-gray-500 border border-gray-200 rounded-lg text-xs font-medium outline-none appearance-none"
                           >
                             {municipalities.map(m => <option key={m}>{m}</option>)}
                           </select>

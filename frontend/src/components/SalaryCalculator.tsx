@@ -132,7 +132,7 @@ export default function SalaryCalculator() {
   const netPercentage = displayGrossMonthly > 0 ? (displayNetSalary / displayGrossMonthly) * 100 : 0;
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] pt-2 pb-12 px-4">
+    <div className="min-h-screen bg-[#F8FAFC] pt-2 pb-12 px-10">
       <div className="max-w-7xl mx-auto">
         <form onSubmit={handleCalculate} className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
           

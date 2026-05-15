@@ -31,9 +31,6 @@ export default function SalaryByCity() {
     return matchesRegion && matchesSearch;
   });
 
-  const maxNet = Math.max(...filtered.map(c => c.netSalary));
-  const minNet = Math.min(...filtered.map(c => c.netSalary));
-
   const taxColor = (tax: number) => {
     if (tax <= 17.5) return "text-green-600";
     if (tax <= 19.5) return "text-orange-500";
@@ -130,46 +127,35 @@ export default function SalaryByCity() {
                   </td>
                 </tr>
               ) : (
-                filtered.map((row) => {
-                  const barWidth = 30 + ((row.netSalary - minNet) / (maxNet - minNet + 1)) * 70;
-                  return (
-                    <tr
-                      key={row.city}
-                      className="border-b border-gray-50 last:border-b-0 hover:bg-blue-50/30 transition-colors"
-                    >
-                      <td className="px-6 py-3.5">
-                        <div className="flex items-center gap-2">
-                          <MapPin className="w-3.5 h-3.5 text-gray-300 flex-shrink-0" />
-                          <div>
-                            <div className="text-sm font-semibold text-gray-800">{row.city}</div>
-                            <div className="text-[11px] text-gray-400">{row.region}</div>
-                          </div>
+                filtered.map((row) => (
+                  <tr
+                    key={row.city}
+                    className="border-b border-gray-50 last:border-b-0 hover:bg-blue-50/30 transition-colors"
+                  >
+                    <td className="px-6 py-3.5">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="w-3.5 h-3.5 text-gray-300 flex-shrink-0" />
+                        <div>
+                          <div className="text-sm font-semibold text-gray-800">{row.city}</div>
+                          <div className="text-[11px] text-gray-400">{row.region}</div>
                         </div>
-                      </td>
-                      <td className="px-4 py-3.5">
-                        <span className={`text-sm font-semibold ${taxColor(row.municipalTax)}`}>
-                          {row.municipalTax.toFixed(2)}%
-                        </span>
-                      </td>
-                      <td className="px-4 py-3.5">
-                        <span className="text-sm font-semibold text-gray-800">
-                          € {row.netSalary.toLocaleString()}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3.5">
-                        <div className="flex items-center gap-3">
-                          <div className="w-24 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                            <div
-                              className="h-1.5 bg-blue-700 rounded-full"
-                              style={{ width: `${barWidth}%` }}
-                            />
-                          </div>
-                          <span className="text-xs text-gray-500 w-10">{row.takeHomePct}%</span>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
+                      </div>
+                    </td>
+                    <td className="px-4 py-3.5">
+                      <span className={`text-sm font-semibold ${taxColor(row.municipalTax)}`}>
+                        {row.municipalTax.toFixed(2)}%
+                      </span>
+                    </td>
+                    <td className="px-4 py-3.5">
+                      <span className="text-sm font-semibold text-gray-800">
+                        € {row.netSalary.toLocaleString()}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3.5">
+                      <span className="text-xs text-gray-500">{row.takeHomePct}%</span>
+                    </td>
+                  </tr>
+                ))
               )}
             </tbody>
           </table>

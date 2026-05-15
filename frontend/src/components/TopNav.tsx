@@ -44,10 +44,12 @@ export default function TopNav({ activeTab, setActiveTab }: TopNavProps) {
         <div className="flex justify-between items-center h-16">
 
           {/* Logo */}
-          <div className="flex items-center">
-            <img src="/assets/logo-icon.jpg" alt="logo" className="w-8 h-8 rounded-[4px]" />
-            <div className="ml-3">
-              <h1 className="text-base font-semibold text-gray-900 leading-tight">Finland Salary Calculator</h1>
+          <div className="flex items-center min-w-0">
+            <img src="/assets/logo-icon.jpg" alt="logo" className="w-8 h-8 rounded-[4px] flex-shrink-0" />
+            <div className="ml-3 min-w-0">
+              <h1 className="text-base font-semibold text-gray-900 leading-tight truncate">
+                Finland Salary Calculator
+              </h1>
               <p className="text-xs text-gray-500 leading-tight">Know your take-home pay</p>
             </div>
           </div>
@@ -66,7 +68,7 @@ export default function TopNav({ activeTab, setActiveTab }: TopNavProps) {
           </nav>
 
           {/* Right side: Language + Hamburger */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-shrink-0">
             {/* Language Selector */}
             <div className="relative">
               <select className="appearance-none bg-white border border-gray-300 rounded-md py-2 pl-3 pr-8 text-sm text-gray-700 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
@@ -89,12 +91,10 @@ export default function TopNav({ activeTab, setActiveTab }: TopNavProps) {
               aria-expanded={menuOpen}
             >
               {menuOpen ? (
-                // X icon
                 <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               ) : (
-                // Hamburger icon
                 <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
@@ -104,9 +104,9 @@ export default function TopNav({ activeTab, setActiveTab }: TopNavProps) {
         </div>
       </div>
 
-      {/* Mobile Dropdown Menu */}
+      {/* Mobile Dropdown Menu — no md:hidden here, JS controls visibility */}
       {menuOpen && (
-        <div className="md:hidden border-t border-gray-100 bg-white shadow-lg">
+        <div className="border-t border-gray-100 bg-white shadow-lg">
           <div className="max-w-7xl mx-auto px-4 py-3 space-y-1">
             {navLinks.map((link) => (
               <button

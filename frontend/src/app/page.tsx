@@ -22,12 +22,11 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState('calculator');
 
   return (
-    <div className="bg-[#F8FAFC] min-h-screen flex flex-col">
+    <div className="bg-[#F8FAFC] min-h-screen flex flex-col w-full overflow-x-hidden">
       <TopNav activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      <main className="flex-grow">
+      <main className="flex-grow w-full">
 
-        {/* Tab: Calculator & Info Cards */}
         {activeTab === 'calculator' && (
           <>
             <SalaryCalculator />
@@ -35,40 +34,17 @@ export default function Home() {
           </>
         )}
 
-        {/* Tab: How It Works (top nav) */}
         {activeTab === 'how-it-works' && <HowItWorks />}
-
-        {/* Tab: How Taxes Work (info card 1) */}
         {activeTab === 'how-taxes-work' && <HowTaxesWork />}
-
-        {/* Tab: Salary By City Screen (info card 2) */}
         {activeTab === 'salary-by-city-screen' && <SalaryByCityScreen />}
-
-        {/* Tab: Salary By City (top nav) */}
         {activeTab === 'salary-by-city' && <SalaryByCity />}
-
-        {/* Tab: Average Salaries By Job (info card 3) */}
         {activeTab === 'average-salaries' && <AverageSalariesByJob />}
-
-        {/* Tab: FAQs (info card 4) */}
         {activeTab === 'faqs' && <FAQsScreen />}
-
-        {/* Tab: Guides */}
         {activeTab === 'guides' && <GuidesContent />}
-
-        {/* Tab: About */}
         {activeTab === 'about' && <AboutContent />}
-
-        {/* Tab: Cookie Settings (bottom nav) */}
         {activeTab === 'cookie-settings' && <CookieSettings />}
-
-        {/* Tab: Disclaimer (bottom nav) */}
         {activeTab === 'disclaimer' && <DisclaimerScreen />}
-
-        {/* Tab: Contact (bottom nav) */}
         {activeTab === 'contact' && <ContactScreen />}
-
-        {/* Tab: Privacy Policy (bottom nav) */}
         {activeTab === 'privacy-policy' && <PrivacyPolicyScreen />}
 
       </main>

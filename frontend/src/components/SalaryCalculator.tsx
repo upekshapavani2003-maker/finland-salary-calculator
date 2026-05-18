@@ -125,6 +125,8 @@ export default function SalaryCalculator() {
   const netDash = hasCalculated ? (netPercentage / 100) * circumference : 0;
   const taxDash = hasCalculated ? (taxPercentage / 100) * circumference : 0;
 
+  const fmt = (n: number) => n.toLocaleString(undefined, { maximumFractionDigits: 0 });
+
   return (
     <div className="bg-[#F8FAFC] pt-2 pb-12 px-2 sm:px-4 lg:px-6 w-full overflow-x-hidden">
       <div className="max-w-7xl mx-auto">
@@ -175,8 +177,6 @@ export default function SalaryCalculator() {
             {/* ── SIMPLE MODE ── */}
             {selectedMode === 'simple' && (
               <div className="flex flex-col gap-3">
-
-                {/* Tax Year */}
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-bold text-gray-700">Tax Year</label>
                   <select
@@ -190,7 +190,6 @@ export default function SalaryCalculator() {
                   </select>
                 </div>
 
-                {/* Gross Salary */}
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2">Gross Salary</label>
                   <div className="flex gap-2 items-center">
@@ -223,43 +222,39 @@ export default function SalaryCalculator() {
                   </div>
                 </div>
 
-                {/* Municipality + Church Tax */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Municipality</label>
-                    <select
-                      value={selectedMunicipality}
-                      onChange={(e) => setSelectedMunicipality(e.target.value)}
-                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-2 py-3 text-xs text-gray-600 font-bold outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                      {municipalities.map(m => <option key={m}>{m}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Church Tax</label>
-                    <div className="flex flex-col gap-2 pt-1">
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input type="radio" checked={churchMember} onChange={() => setChurchMember(true)} className="w-4 h-4 accent-blue-600" />
-                        <span className="text-xs font-medium text-gray-600">Yes (1.0%)</span>
-                      </label>
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input type="radio" checked={!churchMember} onChange={() => setChurchMember(false)} className="w-4 h-4 accent-blue-600" />
-                        <span className="text-xs font-medium text-gray-600">No</span>
-                      </label>
-                    </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Municipality</label>
+                  <select
+                    value={selectedMunicipality}
+                    onChange={(e) => setSelectedMunicipality(e.target.value)}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 text-xs text-gray-600 font-bold outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    {municipalities.map(m => <option key={m}>{m}</option>)}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Church Tax</label>
+                  <div className="flex gap-6">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="radio" checked={churchMember} onChange={() => setChurchMember(true)} className="w-4 h-4 accent-blue-600" />
+                      <span className="text-xs text-gray-600">Yes (1.00%)</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="radio" checked={!churchMember} onChange={() => setChurchMember(false)} className="w-4 h-4 accent-blue-600" />
+                      <span className="text-xs text-gray-600">No</span>
+                    </label>
                   </div>
                 </div>
 
-                {/* Calculate Button */}
                 <button
                   type="submit"
-                  className="w-full bg-blue-700 hover:bg-blue-800 active:scale-[0.99] text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md shadow-blue-200"
+                  className="w-full bg-blue-700 hover:bg-blue-800 active:scale-[0.99] text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md shadow-blue-200 mt-4"
                 >
                   <Calculator size={17} />
                   Calculate Net Salary
                 </button>
 
-                {/* Privacy note */}
                 <div className="flex items-center justify-center gap-2 text-[10px] text-gray-400">
                   <ShieldCheckIcon size={13} className="text-green-500 flex-shrink-0" />
                   <span>Your data is not stored. Calculations are done in your browser.</span>
@@ -270,8 +265,6 @@ export default function SalaryCalculator() {
             {/* ── ADVANCED MODE ── */}
             {selectedMode === 'advanced' && (
               <div className="flex flex-col gap-3">
-
-                {/* Tax Year */}
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-bold text-gray-700">Tax Year</label>
                   <select
@@ -285,13 +278,11 @@ export default function SalaryCalculator() {
                   </select>
                 </div>
 
-                {/* Section 1 */}
                 <div>
                   <div className="mb-2">
                     <div className="text-sm font-bold text-gray-900">1. Income Breakdown</div>
                     <div className="text-[10px] text-gray-400 mt-0.5">Enter your income components before tax.</div>
                   </div>
-
                   <div className="flex flex-col gap-2">
                     {[
                       { label: 'Base Salary', val: baseSalary, setter: setBaseSalary },
@@ -325,8 +316,6 @@ export default function SalaryCalculator() {
                       </div>
                     ))}
                   </div>
-
-                  {/* Total Gross */}
                   <div className="mt-2 p-3 bg-blue-50 border border-blue-100 rounded-xl">
                     <div className="text-xs font-bold text-blue-800 mb-1">Total Gross Income</div>
                     <div className="flex justify-between">
@@ -336,8 +325,7 @@ export default function SalaryCalculator() {
                   </div>
                 </div>
 
-                {/* Section 2 */}
-                <div className="border-t border-gray-100 pt-3">
+                <div className="border-t border-gray-100 pt-0">
                   <div className="text-sm font-bold text-gray-900 mb-3">2. Tax Settings</div>
                   <div className="flex flex-col gap-3">
                     <div>
@@ -370,16 +358,14 @@ export default function SalaryCalculator() {
                   </div>
                 </div>
 
-                {/* Calculate Button */}
                 <button
                   type="submit"
-                  className="w-full bg-blue-700 hover:bg-blue-800 active:scale-[0.99] text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md shadow-blue-200"
+                  className="w-full bg-blue-700 hover:bg-blue-800 active:scale-[0.99] text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md shadow-blue-200 mt-2"
                 >
                   <Calculator size={17} />
                   Calculate Net Salary
                 </button>
 
-                {/* Privacy note */}
                 <div className="flex items-center justify-center gap-2 text-[10px] text-gray-400">
                   <ShieldCheckIcon size={13} className="text-green-500 flex-shrink-0" />
                   <span>Your data is not stored. Calculations are done in your browser.</span>
@@ -390,13 +376,21 @@ export default function SalaryCalculator() {
             {/* What to include */}
             <div className="bg-blue-50/50 rounded-xl p-4 border border-blue-100 mt-auto">
               <p className="text-blue-900 font-bold text-sm mb-3">What should I include in my salary?</p>
-              <div className="flex flex-row flex-wrap gap-x-4 gap-y-2 mb-3">
-                {['Base salary', 'Overtime pay', 'Bonuses', 'Allowances'].map(item => (
-                  <div key={item} className="flex items-center gap-1.5 text-[11px] text-gray-700 font-medium">
-                    <div className="w-3.5 h-3.5 rounded-full bg-blue-700 flex items-center justify-center text-white flex-shrink-0">
+              <div className="grid grid-cols-2 gap-x-4 gap-y-3 mb-3">
+                {[
+                  { label: 'Base salary', sub: 'Your regular monthly salary' },
+                  { label: 'Overtime pay', sub: 'Extra hours beyond regular time' },
+                  { label: 'Bonuses', sub: 'Performance or annual bonuses' },
+                  { label: 'Allowances', sub: 'Night shift, travel, meal, housing, etc.' },
+                ].map(item => (
+                  <div key={item.label} className="flex items-start gap-1.5">
+                    <div className="w-3.5 h-3.5 rounded-full bg-blue-700 flex items-center justify-center text-white flex-shrink-0 mt-0.5">
                       <Check size={9} strokeWidth={4} />
                     </div>
-                    {item}
+                    <div>
+                      <div className="text-[11px] text-gray-700 font-semibold">{item.label}</div>
+                      <div className="text-[10px] text-gray-400 leading-tight">{item.sub}</div>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -404,32 +398,33 @@ export default function SalaryCalculator() {
                 Include all taxable income before tax deductions.
               </p>
             </div>
+
           </div>
 
           {/* ── RIGHT COLUMN: RESULTS ── */}
           <div className="lg:col-span-7 bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6">
             <h3 className="text-gray-900 font-bold text-lg mb-4">Your Result</h3>
 
-            {/* Net Salary Hero */}
-            <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4 sm:p-5 mb-4">
-              <div className="flex flex-col sm:flex-row items-center gap-4">
+            {/* Net Salary Hero — 3-column grid so circle is always centred */}
+            <div className="bg-emerald-50 border border-gray-100 rounded-2xl p-4 sm:p-5 mb-4">
+              <div className="grid grid-cols-3 items-center gap-4">
 
-                {/* Net salary text */}
-                <div className="flex-1 w-full">
+                {/* Left: net salary text */}
+                <div className="col-span-1">
                   <div className="flex items-center gap-1.5 text-sm font-bold text-gray-700 mb-1">
                     Your Net Salary <Info size={13} className="text-blue-400" />
                   </div>
-                  <div className="text-3xl sm:text-4xl font-black text-emerald-500 mb-1">
-                    € {displayNetSalary.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                    <span className="text-base font-medium text-gray-400 ml-2">/ month</span>
+                  <div className="text-2xl sm:text-3xl font-black text-emerald-500 mb-1">
+                    € {fmt(displayNetSalary)}
+                    <span className="text-sm font-medium text-gray-400 ml-1">/ mo</span>
                   </div>
-                  <div className="text-sm text-gray-500">
-                    € {(displayNetSalary * 12).toLocaleString(undefined, { maximumFractionDigits: 0 })} / year
+                  <div className="text-xs text-gray-500">
+                    € {fmt(displayNetSalary * 12)} / year
                   </div>
                 </div>
 
-                {/* SVG Donut */}
-                <div className="flex-shrink-0">
+                {/* Centre: donut chart */}
+                <div className="col-span-1 flex justify-center">
                   <svg width="100" height="100" viewBox="0 0 120 120">
                     <circle cx="60" cy="60" r={radius} fill="none" stroke="#e5e7eb" strokeWidth="16" />
                     {hasCalculated && (
@@ -451,9 +446,9 @@ export default function SalaryCalculator() {
                   </svg>
                 </div>
 
-                {/* Legend */}
-                <div className="flex sm:flex-col flex-row gap-4 sm:gap-3 w-full sm:w-auto sm:min-w-[140px]">
-                  <div className="flex-1 sm:flex-none">
+                {/* Right: legend */}
+                <div className="col-span-1 flex flex-col gap-3">
+                  <div>
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-1.5">
                         <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 flex-shrink-0" />
@@ -462,10 +457,10 @@ export default function SalaryCalculator() {
                       <span className="text-xs font-bold text-gray-800">{netPercentage.toFixed(1)}%</span>
                     </div>
                     <div className="text-right text-[11px] text-gray-400 mt-0.5">
-                      € {displayNetSalary.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                      € {fmt(displayNetSalary)}
                     </div>
                   </div>
-                  <div className="flex-1 sm:flex-none">
+                  <div>
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-1.5">
                         <span className="w-2.5 h-2.5 rounded-full bg-blue-600 flex-shrink-0" />
@@ -474,18 +469,19 @@ export default function SalaryCalculator() {
                       <span className="text-xs font-bold text-gray-800">{taxPercentage.toFixed(1)}%</span>
                     </div>
                     <div className="text-right text-[11px] text-gray-400 mt-0.5">
-                      € {displayTotalTax.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                      € {fmt(displayTotalTax)}
                     </div>
                   </div>
                 </div>
+
               </div>
             </div>
 
             {/* Breakdown + Calc Info */}
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-4">
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 mb-4">
 
               {/* Breakdown */}
-              <div>
+              <div className="xl:col-span-2">
                 <div className="flex items-center gap-2 mb-2">
                   <TrendingUp size={15} className="text-emerald-500" />
                   <h4 className="font-bold text-gray-900 text-sm">Breakdown</h4>
@@ -495,9 +491,7 @@ export default function SalaryCalculator() {
                     <span className="text-xs text-gray-600 flex items-center gap-1.5">
                       <Wallet size={12} className="text-blue-500" /> Gross Salary
                     </span>
-                    <span className="text-xs font-bold text-gray-800">
-                      € {displayGrossMonthly.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                    </span>
+                    <span className="text-xs font-bold text-gray-800">€ {fmt(displayGrossMonthly)}</span>
                   </div>
 
                   <div
@@ -508,9 +502,7 @@ export default function SalaryCalculator() {
                       <Calculator size={12} className="text-red-400" /> Total Tax
                     </span>
                     <div className="flex items-center gap-1">
-                      <span className="text-xs font-bold text-red-500">
-                        - € {displayTotalTax.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                      </span>
+                      <span className="text-xs font-bold text-red-500">- € {fmt(displayTotalTax)}</span>
                       <ChevronDown size={11} className={`text-gray-400 transition-transform ${isTaxOpen ? 'rotate-180' : ''}`} />
                     </div>
                   </div>
@@ -520,13 +512,13 @@ export default function SalaryCalculator() {
                       {[
                         { label: 'State Income Tax', value: displayStateTax, icon: <Landmark size={11} className="text-indigo-400" /> },
                         { label: `Municipal Tax (${displayMunicipalityRate.toFixed(2)}%)`, value: displayMunicipalTax, icon: <Building2 size={11} className="text-orange-400" /> },
-                        { label: 'Pension (7.15%)', value: displayPension, icon: <Coins size={11} className="text-yellow-500" /> },
-                        { label: 'Unemployment (1.50%)', value: displayUnemployment, icon: <ShieldCheck size={11} className="text-emerald-400" /> },
+                        { label: 'Pension Contribution (7.15%)', value: displayPension, icon: <Coins size={11} className="text-yellow-500" /> },
+                        { label: 'Unemployment Insurance (1.50%)', value: displayUnemployment, icon: <ShieldCheck size={11} className="text-emerald-400" /> },
                         ...(displayChurchMember ? [{ label: 'Church Tax (1.0%)', value: displayChurchTax, icon: <Church size={11} className="text-purple-400" /> }] : []),
                       ].map((item, idx) => (
                         <div key={idx} className="flex justify-between items-center text-[11px] pl-3">
                           <span className="text-gray-500 flex items-center gap-1.5">{item.icon}{item.label}</span>
-                          <span className="text-gray-600 font-medium">- € {item.value.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                          <span className="text-gray-600 font-medium">- € {fmt(item.value)}</span>
                         </div>
                       ))}
                     </div>
@@ -536,15 +528,13 @@ export default function SalaryCalculator() {
                     <span className="text-xs font-bold text-emerald-600 flex items-center gap-1.5">
                       <Banknote size={12} className="text-emerald-500" /> Net Salary
                     </span>
-                    <span className="text-xs font-bold text-emerald-600">
-                      € {displayNetSalary.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                    </span>
+                    <span className="text-xs font-bold text-emerald-600">€ {fmt(displayNetSalary)}</span>
                   </div>
                 </div>
               </div>
 
               {/* Calculation Info */}
-              <div>
+              <div className="xl:col-span-1">
                 <div className="flex items-center gap-2 mb-2">
                   <Info size={15} className="text-blue-500" />
                   <h4 className="font-bold text-gray-900 text-sm">Calculation Info</h4>
@@ -552,10 +542,10 @@ export default function SalaryCalculator() {
                 <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2">
                   {[
                     { label: 'Tax Year', value: displayTaxYear, icon: <Calendar size={11} className="text-blue-500" /> },
-                    { label: 'Municipality Rate', value: `${displayMunicipalityRate.toFixed(2)}%`, icon: <Building2 size={11} className="text-orange-500" /> },
+                    { label: 'Municipality Tax Rate', value: `${displayMunicipalityRate.toFixed(2)}%`, icon: <Building2 size={11} className="text-orange-500" /> },
                     { label: 'State Tax Method', value: 'Progressive', icon: <Scale size={11} className="text-indigo-500" /> },
-                    { label: 'Pension', value: '7.15%', icon: <Coins size={11} className="text-yellow-600" /> },
-                    { label: 'Unemployment', value: '1.50%', icon: <ShieldCheck size={11} className="text-emerald-500" /> },
+                    { label: 'Pension Contribution', value: '7.15%', icon: <Coins size={11} className="text-yellow-600" /> },
+                    { label: 'Unemployment Insurance', value: '1.50%', icon: <ShieldCheck size={11} className="text-emerald-500" /> },
                     { label: 'Church Tax', value: displayChurchMember ? '1.00%' : '0.00%', icon: <Church size={11} className="text-purple-500" /> },
                   ].map((info, idx) => (
                     <div key={idx} className="flex justify-between items-center text-[11px]">
@@ -564,7 +554,7 @@ export default function SalaryCalculator() {
                     </div>
                   ))}
                   <p className="text-[10px] text-gray-400 pt-2 border-t border-slate-200 leading-relaxed">
-                    Estimate based on {displayTaxYear} tax rates and average deductions.
+                    This is an estimate based on {displayTaxYear} tax rates and average deductions.
                   </p>
                 </div>
               </div>
@@ -583,8 +573,8 @@ export default function SalaryCalculator() {
                 <ChevronDown size={14} className="text-gray-400" />
               </div>
               {isCalcOpen && (
-                <div className="bg-white px-4 py-4 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-start gap-4">
-                  <ol className="list-decimal pl-4 space-y-1.5 text-xs text-gray-600 flex-1">
+                <div className="bg-white px-4 py-2 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-start gap-4">
+                  <ol className="list-decimal pl-4 space-y-1 text-xs text-gray-600 flex-1">
                     <li>Your gross income is calculated from all income components (annual).</li>
                     <li>Social security contributions (pension + unemployment) are deducted.</li>
                     <li>Remaining income is taxed using progressive state tax rates.</li>
@@ -592,7 +582,7 @@ export default function SalaryCalculator() {
                   </ol>
                   <button
                     type="button"
-                    className="px-4 py-2 border border-gray-200 rounded-lg text-xs font-bold text-blue-700 hover:bg-gray-50 transition-colors whitespace-nowrap flex-shrink-0"
+                    className="px-4 py-2 border border-gray-200 rounded-lg text-xs font-bold text-blue-700 hover:bg-gray-50 transition-colors whitespace-nowrap flex-shrink-0 mt-5"
                   >
                     Show tax brackets used
                   </button>
@@ -601,6 +591,7 @@ export default function SalaryCalculator() {
             </div>
 
           </div>
+
         </form>
       </div>
     </div>

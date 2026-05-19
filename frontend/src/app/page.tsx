@@ -21,16 +21,21 @@ import BottomNav from '@/components/BottomNav';
 export default function Home() {
   const [activeTab, setActiveTab] = useState('calculator');
 
+  const handleNavigate = (tab: string) => {
+    setActiveTab(tab);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+
   return (
     <div className="bg-[#F8FAFC] min-h-screen flex flex-col w-full overflow-x-hidden">
-      <TopNav activeTab={activeTab} setActiveTab={setActiveTab} />
+      <TopNav activeTab={activeTab} setActiveTab={handleNavigate} />
 
       <main className="flex-grow w-full">
 
         {activeTab === 'calculator' && (
           <>
             <SalaryCalculator />
-            <InfoCards onNavigate={setActiveTab} />
+            <InfoCards onNavigate={handleNavigate} />
           </>
         )}
 
@@ -59,7 +64,7 @@ export default function Home() {
         </div>
       </footer>
 
-      <BottomNav setActiveTab={setActiveTab} />
+      <BottomNav setActiveTab={handleNavigate} />
     </div>
   );
 }

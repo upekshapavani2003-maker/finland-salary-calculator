@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { 
   ChevronUp, 
   Info, 
@@ -21,6 +21,85 @@ import {
   ShieldCheck as ShieldCheckIcon,
   Trash2
 } from 'lucide-react';
+
+const MUNICIPALITIES = [
+  'Helsinki (17.00%)',
+  'Espoo (17.00%)',
+  'Tampere (17.50%)',
+  'Turku (18.50%)',
+  'Oulu (19.50%)',
+  'Jyväskylä (19.00%)',
+  'Kuopio (20.00%)',
+  'Lahti (20.50%)',
+  'Rovaniemi (22.00%)',
+  'Vaasa (19.00%)',
+  'Joensuu (21.00%)',
+  'Pori (20.00%)',
+];
+
+// Reusable custom municipality dropdown
+function MunicipalityDropdown({
+  value,
+  onChange,
+  withIcon = false,
+}: {
+  value: string;
+  onChange: (val: string) => void;
+  withIcon?: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative w-full">
+      {/* Trigger */}
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className={`w-full flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl py-3 text-xs font-bold text-gray-600 outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${withIcon ? 'pl-8 pr-3' : 'px-3'}`}
+      >
+        {withIcon && (
+          <Building2 size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-500 pointer-events-none" />
+        )}
+        <span className="truncate">{value}</span>
+        <ChevronDown size={13} className={`text-gray-400 flex-shrink-0 ml-2 transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+
+      {/* Dropdown */}
+      {open && (
+        <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+          <div className="overflow-y-auto max-h-48">
+            {MUNICIPALITIES.map((m) => (
+              <button
+                key={m}
+                type="button"
+                onClick={() => { onChange(m); setOpen(false); }}
+                className={`w-full flex items-center justify-between px-4 py-2.5 text-xs text-left transition-colors ${
+                  value === m
+                    ? 'bg-blue-50 text-blue-700 font-bold'
+                    : 'text-gray-600 hover:bg-gray-50 font-medium'
+                }`}
+              >
+                <span>{m}</span>
+                {value === m && <Check size={12} className="text-blue-600 flex-shrink-0" />}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function SalaryCalculator() {
   const [hasCalculated, setHasCalculated] = useState<boolean>(false);
@@ -73,21 +152,6 @@ export default function SalaryCalculator() {
   const totalTax = stateTax + municipalTax + pension + unemployment + churchTax;
   const netSalary = actualGrossMonthly - totalTax;
 
-  const municipalities = [
-    'Helsinki (17.00%)',
-    'Espoo (17.00%)',
-    'Tampere (17.50%)',
-    'Turku (18.50%)',
-    'Oulu (19.50%)',
-    'Jyväskylä (19.00%)',
-    'Kuopio (20.00%)',
-    'Lahti (20.50%)',
-    'Rovaniemi (22.00%)',
-    'Vaasa (19.00%)',
-    'Joensuu (21.00%)',
-    'Pori (20.00%)',
-  ];
-
   const handleCalculate = (e: React.FormEvent) => {
     e.preventDefault();
     setCalculatedValues({
@@ -137,9 +201,6 @@ export default function SalaryCalculator() {
   const taxDash = hasCalculated ? (taxPercentage / 100) * circumference : 0;
 
   const fmt = (n: number) => n.toLocaleString(undefined, { maximumFractionDigits: 0 });
-
-  // Shared municipality select styles
-  const municipalitySelectClass = "w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 text-xs text-gray-600 font-bold outline-none focus:ring-2 focus:ring-blue-500 overflow-y-auto";
 
   return (
     <div className="bg-[#F8FAFC] pt-2 pb-12 px-2 sm:px-4 lg:px-6 w-full overflow-x-hidden">
@@ -242,16 +303,10 @@ export default function SalaryCalculator() {
                 {/* Municipality */}
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2">Municipality</label>
-                  <select
+                  <MunicipalityDropdown
                     value={selectedMunicipality}
-                    onChange={(e) => setSelectedMunicipality(e.target.value)}
-                    size={1}
-                    className={municipalitySelectClass}
-                  >
-                    {municipalities.map(m => (
-                      <option key={m} value={m}>{m}</option>
-                    ))}
-                  </select>
+                    onChange={setSelectedMunicipality}
+                  />
                 </div>
 
                 {/* Church Tax */}
@@ -272,7 +327,7 @@ export default function SalaryCalculator() {
                 {/* Calculate Button */}
                 <button
                   type="submit"
-                  className="w-full bg-blue-700 hover:bg-blue-800 active:scale-[0.99] text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md shadow-blue-200 mt-4"
+                  className="w-full bg-blue-700 hover:bg-blue-800 active:scale-[0.99] text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md shadow-blue-200 mt-2"
                 >
                   <Calculator size={17} />
                   Calculate Net Salary
@@ -355,27 +410,18 @@ export default function SalaryCalculator() {
                 </div>
 
                 {/* Section 2 */}
-                <div className="border-t border-gray-100 pt-3">
+                <div className="border-t border-gray-100 pt-1">
                   <div className="text-sm font-bold text-gray-900 mb-3">2. Tax Settings</div>
                   <div className="flex flex-col gap-3">
 
-                    {/* Municipality — scrollable list */}
+                    {/* Municipality */}
                     <div>
                       <label className="block text-xs font-bold text-gray-600 mb-1.5">Municipality</label>
-                      <div className="relative">
-                        <Building2 size={13} className="absolute left-3 top-3 text-blue-500 z-10 pointer-events-none" />
-                        <select
-                          value={selectedMunicipality}
-                          onChange={(e) => setSelectedMunicipality(e.target.value)}
-                          size={1}
-                          className="w-full pl-8 pr-8 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-600 outline-none appearance-none focus:ring-2 focus:ring-blue-500"
-                        >
-                          {municipalities.map(m => (
-                            <option key={m} value={m}>{m}</option>
-                          ))}
-                        </select>
-                        <ChevronDown size={13} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-                      </div>
+                      <MunicipalityDropdown
+                        value={selectedMunicipality}
+                        onChange={setSelectedMunicipality}
+                        withIcon
+                      />
                     </div>
 
                     {/* Church Tax */}

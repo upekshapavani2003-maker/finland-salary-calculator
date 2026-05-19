@@ -108,12 +108,12 @@ export default function SalaryByCity() {
               onChange={(e) => setGrossInput(e.target.value)}
               onKeyDown={handleKeyDown}
               className="w-full pl-7 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Enter gross monthly salary"
+              placeholder="0 / monthly"
             />
           </div>
           <button
             onClick={handleCompare}
-            className="bg-blue-700 hover:bg-blue-800 text-white text-sm font-medium px-6 py-2.5 rounded-lg transition-colors whitespace-nowrap"
+            className="bg-blue-700 hover:bg-blue-800 text-white text-sm font-medium px-3 py-2.5 rounded-lg transition-colors whitespace-nowrap"
           >
             Compare cities
           </button>
@@ -144,7 +144,7 @@ export default function SalaryByCity() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search for a city..."
-            className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+            className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
           />
         </div>
       </div>
@@ -159,11 +159,6 @@ export default function SalaryByCity() {
                 <th className="text-left px-4 py-3 text-[10px] font-semibold tracking-widest uppercase text-gray-400">Municipal tax</th>
                 <th className="text-left px-4 py-3 text-[10px] font-semibold tracking-widest uppercase text-gray-400">
                   Net salary
-                  {hasCompared && calculatedGross > 0 && (
-                    <span className="normal-case font-normal text-gray-300 ml-1">
-                      (€{calculatedGross.toLocaleString()} gross)
-                    </span>
-                  )}
                 </th>
                 <th className="text-left px-4 py-3 text-[10px] font-semibold tracking-widest uppercase text-gray-400">Take-home %</th>
               </tr>

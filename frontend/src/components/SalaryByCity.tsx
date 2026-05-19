@@ -1,31 +1,69 @@
 "use client";
 
 import { useState } from 'react';
-import { MapPin, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 
-const ALL_CITIES = [
-  { city: "Helsinki", region: "Uusimaa", municipalTax: 17.0, netSalary: 2850, takeHomePct: 71.3, regionKey: "South Finland" },
-  { city: "Espoo", region: "Uusimaa", municipalTax: 17.0, netSalary: 2850, takeHomePct: 71.3, regionKey: "South Finland" },
-  { city: "Tampere", region: "Pirkanmaa", municipalTax: 17.5, netSalary: 2830, takeHomePct: 70.8, regionKey: "West Finland" },
-  { city: "Turku", region: "Southwest Finland", municipalTax: 18.5, netSalary: 2790, takeHomePct: 69.8, regionKey: "South Finland" },
-  { city: "Oulu", region: "North Ostrobothnia", municipalTax: 19.5, netSalary: 2750, takeHomePct: 68.8, regionKey: "North Finland" },
-  { city: "Jyväskylä", region: "Central Finland", municipalTax: 19.0, netSalary: 2770, takeHomePct: 69.3, regionKey: "West Finland" },
-  { city: "Kuopio", region: "North Savo", municipalTax: 20.0, netSalary: 2730, takeHomePct: 68.3, regionKey: "East Finland" },
-  { city: "Lahti", region: "Päijät-Häme", municipalTax: 20.5, netSalary: 2710, takeHomePct: 67.8, regionKey: "South Finland" },
-  { city: "Rovaniemi", region: "Lapland", municipalTax: 22.0, netSalary: 2670, takeHomePct: 66.8, regionKey: "North Finland" },
-  { city: "Vaasa", region: "Ostrobothnia", municipalTax: 19.0, netSalary: 2770, takeHomePct: 69.3, regionKey: "West Finland" },
-  { city: "Joensuu", region: "North Karelia", municipalTax: 21.0, netSalary: 2700, takeHomePct: 67.5, regionKey: "East Finland" },
-  { city: "Pori", region: "Satakunta", municipalTax: 20.0, netSalary: 2730, takeHomePct: 68.3, regionKey: "West Finland" },
+const TAX_RATES: Record<string, number> = {
+  Helsinki: 17.0,
+  Espoo: 17.0,
+  Tampere: 17.5,
+  Turku: 18.5,
+  Oulu: 19.5,
+  Jyväskylä: 19.0,
+  Kuopio: 20.0,
+  Lahti: 20.5,
+  Rovaniemi: 22.0,
+  Vaasa: 19.0,
+  Joensuu: 21.0,
+  Pori: 20.0,
+};
+
+const BASE_CITIES = [
+  { city: "Helsinki", region: "Uusimaa", regionKey: "South Finland" },
+  { city: "Espoo", region: "Uusimaa", regionKey: "South Finland" },
+  { city: "Tampere", region: "Pirkanmaa", regionKey: "West Finland" },
+  { city: "Turku", region: "Southwest Finland", regionKey: "South Finland" },
+  { city: "Oulu", region: "North Ostrobothnia", regionKey: "North Finland" },
+  { city: "Jyväskylä", region: "Central Finland", regionKey: "West Finland" },
+  { city: "Kuopio", region: "North Savo", regionKey: "East Finland" },
+  { city: "Lahti", region: "Päijät-Häme", regionKey: "South Finland" },
+  { city: "Rovaniemi", region: "Lapland", regionKey: "North Finland" },
+  { city: "Vaasa", region: "Ostrobothnia", regionKey: "West Finland" },
+  { city: "Joensuu", region: "North Karelia", regionKey: "East Finland" },
+  { city: "Pori", region: "Satakunta", regionKey: "West Finland" },
 ];
 
 const REGIONS = ["All cities", "South Finland", "West Finland", "North Finland", "East Finland"];
 
+function calculateNet(gross: number, municipalTax: number): number {
+  if (gross <= 0) return 0;
+  const pension = gross * 0.0715;
+  const unemployment = gross * 0.015;
+  const stateTax = gross * 0.10;
+  const municipal = gross * (municipalTax / 100);
+  return gross - pension - unemployment - stateTax - municipal;
+}
+
 export default function SalaryByCity() {
   const [activeRegion, setActiveRegion] = useState("All cities");
   const [searchQuery, setSearchQuery] = useState("");
-  const [grossInput, setGrossInput] = useState("4,000");
+  const [grossInput, setGrossInput] = useState("");
+  const [calculatedGross, setCalculatedGross] = useState(0);
+  const [hasCompared, setHasCompared] = useState(false);
 
-  const filtered = ALL_CITIES.filter((c) => {
+  const handleCompare = () => {
+    const parsed = parseFloat(grossInput.replace(/,/g, ''));
+    if (!isNaN(parsed) && parsed > 0) {
+      setCalculatedGross(parsed);
+      setHasCompared(true);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') handleCompare();
+  };
+
+  const filtered = BASE_CITIES.filter((c) => {
     const matchesRegion = activeRegion === "All cities" || c.regionKey === activeRegion;
     const matchesSearch = searchQuery === "" || c.city.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesRegion && matchesSearch;
@@ -68,11 +106,15 @@ export default function SalaryByCity() {
               type="text"
               value={grossInput}
               onChange={(e) => setGrossInput(e.target.value)}
+              onKeyDown={handleKeyDown}
               className="w-full pl-7 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="4,000 / month"
+              placeholder="Enter gross monthly salary"
             />
           </div>
-          <button className="bg-blue-700 hover:bg-blue-800 text-white text-sm font-medium px-6 py-2.5 rounded-lg transition-colors whitespace-nowrap">
+          <button
+            onClick={handleCompare}
+            className="bg-blue-700 hover:bg-blue-800 text-white text-sm font-medium px-6 py-2.5 rounded-lg transition-colors whitespace-nowrap"
+          >
             Compare cities
           </button>
         </div>
@@ -115,7 +157,14 @@ export default function SalaryByCity() {
               <tr className="border-b border-gray-100 bg-gray-50">
                 <th className="text-left px-6 py-3 text-[10px] font-semibold tracking-widest uppercase text-gray-400">City</th>
                 <th className="text-left px-4 py-3 text-[10px] font-semibold tracking-widest uppercase text-gray-400">Municipal tax</th>
-                <th className="text-left px-4 py-3 text-[10px] font-semibold tracking-widest uppercase text-gray-400">Net salary (€4k gross)</th>
+                <th className="text-left px-4 py-3 text-[10px] font-semibold tracking-widest uppercase text-gray-400">
+                  Net salary
+                  {hasCompared && calculatedGross > 0 && (
+                    <span className="normal-case font-normal text-gray-300 ml-1">
+                      (€{calculatedGross.toLocaleString()} gross)
+                    </span>
+                  )}
+                </th>
                 <th className="text-left px-4 py-3 text-[10px] font-semibold tracking-widest uppercase text-gray-400">Take-home %</th>
               </tr>
             </thead>
@@ -127,35 +176,57 @@ export default function SalaryByCity() {
                   </td>
                 </tr>
               ) : (
-                filtered.map((row) => (
-                  <tr
-                    key={row.city}
-                    className="border-b border-gray-50 last:border-b-0 hover:bg-blue-50/30 transition-colors"
-                  >
-                    <td className="px-6 py-3.5">
-                      <div className="flex items-center gap-2">
-                        <MapPin className="w-3.5 h-3.5 text-gray-300 flex-shrink-0" />
+                filtered.map((row) => {
+                  const municipalTax = TAX_RATES[row.city] ?? 20.0;
+                  const netSalary = hasCompared ? calculateNet(calculatedGross, municipalTax) : 0;
+                  const takeHomePct = hasCompared && calculatedGross > 0
+                    ? (netSalary / calculatedGross) * 100
+                    : 0;
+
+                  return (
+                    <tr
+                      key={row.city}
+                      className="border-b border-gray-50 last:border-b-0 hover:bg-blue-50/30 transition-colors"
+                    >
+                      {/* City */}
+                      <td className="px-6 py-3.5">
                         <div>
                           <div className="text-sm font-semibold text-gray-800">{row.city}</div>
                           <div className="text-[11px] text-gray-400">{row.region}</div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5">
-                      <span className={`text-sm font-semibold ${taxColor(row.municipalTax)}`}>
-                        {row.municipalTax.toFixed(2)}%
-                      </span>
-                    </td>
-                    <td className="px-4 py-3.5">
-                      <span className="text-sm font-semibold text-gray-800">
-                        € {row.netSalary.toLocaleString()}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3.5">
-                      <span className="text-xs text-gray-500">{row.takeHomePct}%</span>
-                    </td>
-                  </tr>
-                ))
+                      </td>
+
+                      {/* Municipal tax */}
+                      <td className="px-4 py-3.5">
+                        <span className={`text-sm font-semibold ${taxColor(municipalTax)}`}>
+                          {municipalTax.toFixed(2)}%
+                        </span>
+                      </td>
+
+                      {/* Net salary */}
+                      <td className="px-4 py-3.5">
+                        {hasCompared && netSalary > 0 ? (
+                          <span className="text-sm font-semibold text-gray-800">
+                            € {Math.round(netSalary).toLocaleString()}
+                          </span>
+                        ) : (
+                          <span className="text-sm font-semibold text-gray-300">€ 0</span>
+                        )}
+                      </td>
+
+                      {/* Take-home % — percentage only */}
+                      <td className="px-4 py-3.5">
+                        {hasCompared && takeHomePct > 0 ? (
+                          <span className="text-sm font-semibold text-gray-700">
+                            {takeHomePct.toFixed(1)}%
+                          </span>
+                        ) : (
+                          <span className="text-sm font-semibold text-gray-300">0%</span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
@@ -164,7 +235,10 @@ export default function SalaryByCity() {
         {/* Footer note */}
         <div className="px-6 py-3 border-t border-gray-100">
           <p className="text-[11px] text-gray-400">
-            Based on 2024 tax rates. Net salary shown for €4,000 gross/month.
+            {hasCompared
+              ? `Net salary shown for €${calculatedGross.toLocaleString()} gross/month based on 2024 tax rates.`
+              : 'Enter a salary above and click Compare cities to see results.'
+            }
           </p>
         </div>
       </div>

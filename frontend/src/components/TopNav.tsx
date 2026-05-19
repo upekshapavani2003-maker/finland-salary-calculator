@@ -14,6 +14,14 @@ const navLinks = [
   { label: 'About', tab: 'about' },
 ];
 
+const FinlandFlag = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 11" width="32" height="20" style={{ borderRadius: 3, display: 'block', flexShrink: 0 }}>
+    <rect width="18" height="11" fill="#fff"/>
+    <rect width="18" height="3" y="4" fill="#003580"/>
+    <rect width="3" height="11" x="4" fill="#003580"/>
+  </svg>
+);
+
 export default function TopNav({ activeTab, setActiveTab }: TopNavProps) {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -45,7 +53,7 @@ export default function TopNav({ activeTab, setActiveTab }: TopNavProps) {
 
           {/* Logo */}
           <div className="flex items-center min-w-0">
-            <img src="/assets/logo-icon.jpg" alt="logo" className="w-8 h-8 rounded-[4px] flex-shrink-0" />
+            <FinlandFlag />
             <div className="ml-3 min-w-0">
               <h1 className="text-base font-semibold text-gray-900 leading-tight truncate">
                 Finland Salary Calculator
@@ -69,7 +77,6 @@ export default function TopNav({ activeTab, setActiveTab }: TopNavProps) {
 
           {/* Right side: Language + Hamburger */}
           <div className="flex items-center gap-2 flex-shrink-0">
-            {/* Language Selector */}
             <div className="relative">
               <select className="appearance-none bg-white border border-gray-300 rounded-md py-2 pl-3 pr-8 text-sm text-gray-700 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 <option value="en">EN</option>
@@ -83,7 +90,6 @@ export default function TopNav({ activeTab, setActiveTab }: TopNavProps) {
               </div>
             </div>
 
-            {/* Hamburger — mobile only */}
             <button
               className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-150"
               onClick={() => setMenuOpen(!menuOpen)}
@@ -104,7 +110,6 @@ export default function TopNav({ activeTab, setActiveTab }: TopNavProps) {
         </div>
       </div>
 
-      {/* Mobile Dropdown Menu — no md:hidden here, JS controls visibility */}
       {menuOpen && (
         <div className="border-t border-gray-100 bg-white shadow-lg">
           <div className="max-w-7xl mx-auto px-4 py-3 space-y-1">

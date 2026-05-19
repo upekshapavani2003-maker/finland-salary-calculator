@@ -74,7 +74,18 @@ export default function SalaryCalculator() {
   const netSalary = actualGrossMonthly - totalTax;
 
   const municipalities = [
-    'Helsinki (17.00%)', 'Espoo (16.50%)', 'Tampere (18.00%)', 'Vantaa (17.50%)', 'Oulu (18.50%)'
+    'Helsinki (17.00%)',
+    'Espoo (17.00%)',
+    'Tampere (17.50%)',
+    'Turku (18.50%)',
+    'Oulu (19.50%)',
+    'Jyväskylä (19.00%)',
+    'Kuopio (20.00%)',
+    'Lahti (20.50%)',
+    'Rovaniemi (22.00%)',
+    'Vaasa (19.00%)',
+    'Joensuu (21.00%)',
+    'Pori (20.00%)',
   ];
 
   const handleCalculate = (e: React.FormEvent) => {
@@ -127,6 +138,9 @@ export default function SalaryCalculator() {
 
   const fmt = (n: number) => n.toLocaleString(undefined, { maximumFractionDigits: 0 });
 
+  // Shared municipality select styles
+  const municipalitySelectClass = "w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 text-xs text-gray-600 font-bold outline-none focus:ring-2 focus:ring-blue-500 overflow-y-auto";
+
   return (
     <div className="bg-[#F8FAFC] pt-2 pb-12 px-2 sm:px-4 lg:px-6 w-full overflow-x-hidden">
       <div className="max-w-7xl mx-auto">
@@ -177,6 +191,8 @@ export default function SalaryCalculator() {
             {/* ── SIMPLE MODE ── */}
             {selectedMode === 'simple' && (
               <div className="flex flex-col gap-3">
+
+                {/* Tax Year */}
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-bold text-gray-700">Tax Year</label>
                   <select
@@ -190,6 +206,7 @@ export default function SalaryCalculator() {
                   </select>
                 </div>
 
+                {/* Gross Salary */}
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2">Gross Salary</label>
                   <div className="flex gap-2 items-center">
@@ -222,17 +239,22 @@ export default function SalaryCalculator() {
                   </div>
                 </div>
 
+                {/* Municipality */}
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2">Municipality</label>
                   <select
                     value={selectedMunicipality}
                     onChange={(e) => setSelectedMunicipality(e.target.value)}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 text-xs text-gray-600 font-bold outline-none focus:ring-2 focus:ring-blue-500"
+                    size={1}
+                    className={municipalitySelectClass}
                   >
-                    {municipalities.map(m => <option key={m}>{m}</option>)}
+                    {municipalities.map(m => (
+                      <option key={m} value={m}>{m}</option>
+                    ))}
                   </select>
                 </div>
 
+                {/* Church Tax */}
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2">Church Tax</label>
                   <div className="flex gap-6">
@@ -247,6 +269,7 @@ export default function SalaryCalculator() {
                   </div>
                 </div>
 
+                {/* Calculate Button */}
                 <button
                   type="submit"
                   className="w-full bg-blue-700 hover:bg-blue-800 active:scale-[0.99] text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md shadow-blue-200 mt-4"
@@ -255,6 +278,7 @@ export default function SalaryCalculator() {
                   Calculate Net Salary
                 </button>
 
+                {/* Privacy note */}
                 <div className="flex items-center justify-center gap-2 text-[10px] text-gray-400">
                   <ShieldCheckIcon size={13} className="text-green-500 flex-shrink-0" />
                   <span>Your data is not stored. Calculations are done in your browser.</span>
@@ -265,6 +289,8 @@ export default function SalaryCalculator() {
             {/* ── ADVANCED MODE ── */}
             {selectedMode === 'advanced' && (
               <div className="flex flex-col gap-3">
+
+                {/* Tax Year */}
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-bold text-gray-700">Tax Year</label>
                   <select
@@ -278,6 +304,7 @@ export default function SalaryCalculator() {
                   </select>
                 </div>
 
+                {/* Section 1 */}
                 <div>
                   <div className="mb-2">
                     <div className="text-sm font-bold text-gray-900">1. Income Breakdown</div>
@@ -316,6 +343,8 @@ export default function SalaryCalculator() {
                       </div>
                     ))}
                   </div>
+
+                  {/* Total Gross */}
                   <div className="mt-2 p-3 bg-blue-50 border border-blue-100 rounded-xl">
                     <div className="text-xs font-bold text-blue-800 mb-1">Total Gross Income</div>
                     <div className="flex justify-between">
@@ -325,23 +354,31 @@ export default function SalaryCalculator() {
                   </div>
                 </div>
 
-                <div className="border-t border-gray-100 pt-0">
+                {/* Section 2 */}
+                <div className="border-t border-gray-100 pt-3">
                   <div className="text-sm font-bold text-gray-900 mb-3">2. Tax Settings</div>
                   <div className="flex flex-col gap-3">
+
+                    {/* Municipality — scrollable list */}
                     <div>
                       <label className="block text-xs font-bold text-gray-600 mb-1.5">Municipality</label>
                       <div className="relative">
-                        <Building2 size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-500" />
+                        <Building2 size={13} className="absolute left-3 top-3 text-blue-500 z-10 pointer-events-none" />
                         <select
                           value={selectedMunicipality}
                           onChange={(e) => setSelectedMunicipality(e.target.value)}
+                          size={1}
                           className="w-full pl-8 pr-8 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-600 outline-none appearance-none focus:ring-2 focus:ring-blue-500"
                         >
-                          {municipalities.map(m => <option key={m}>{m}</option>)}
+                          {municipalities.map(m => (
+                            <option key={m} value={m}>{m}</option>
+                          ))}
                         </select>
                         <ChevronDown size={13} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
                       </div>
                     </div>
+
+                    {/* Church Tax */}
                     <div>
                       <label className="block text-xs font-bold text-gray-600 mb-1.5">Church Tax</label>
                       <div className="flex gap-6">
@@ -358,6 +395,7 @@ export default function SalaryCalculator() {
                   </div>
                 </div>
 
+                {/* Calculate Button */}
                 <button
                   type="submit"
                   className="w-full bg-blue-700 hover:bg-blue-800 active:scale-[0.99] text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md shadow-blue-200 mt-2"
@@ -366,6 +404,7 @@ export default function SalaryCalculator() {
                   Calculate Net Salary
                 </button>
 
+                {/* Privacy note */}
                 <div className="flex items-center justify-center gap-2 text-[10px] text-gray-400">
                   <ShieldCheckIcon size={13} className="text-green-500 flex-shrink-0" />
                   <span>Your data is not stored. Calculations are done in your browser.</span>
@@ -405,11 +444,9 @@ export default function SalaryCalculator() {
           <div className="lg:col-span-7 bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6">
             <h3 className="text-gray-900 font-bold text-lg mb-4">Your Result</h3>
 
-            {/* Net Salary Hero — 3-column grid so circle is always centred */}
+            {/* Net Salary Hero */}
             <div className="bg-emerald-50 border border-gray-100 rounded-2xl p-4 sm:p-5 mb-4">
               <div className="grid grid-cols-3 items-center gap-4">
-
-                {/* Left: net salary text */}
                 <div className="col-span-1">
                   <div className="flex items-center gap-1.5 text-sm font-bold text-gray-700 mb-1">
                     Your Net Salary <Info size={13} className="text-blue-400" />
@@ -423,7 +460,6 @@ export default function SalaryCalculator() {
                   </div>
                 </div>
 
-                {/* Centre: donut chart */}
                 <div className="col-span-1 flex justify-center">
                   <svg width="100" height="100" viewBox="0 0 120 120">
                     <circle cx="60" cy="60" r={radius} fill="none" stroke="#e5e7eb" strokeWidth="16" />
@@ -446,7 +482,6 @@ export default function SalaryCalculator() {
                   </svg>
                 </div>
 
-                {/* Right: legend */}
                 <div className="col-span-1 flex flex-col gap-3">
                   <div>
                     <div className="flex items-center justify-between gap-2">
@@ -456,9 +491,7 @@ export default function SalaryCalculator() {
                       </div>
                       <span className="text-xs font-bold text-gray-800">{netPercentage.toFixed(1)}%</span>
                     </div>
-                    <div className="text-right text-[11px] text-gray-400 mt-0.5">
-                      € {fmt(displayNetSalary)}
-                    </div>
+                    <div className="text-right text-[11px] text-gray-400 mt-0.5">€ {fmt(displayNetSalary)}</div>
                   </div>
                   <div>
                     <div className="flex items-center justify-between gap-2">
@@ -468,12 +501,9 @@ export default function SalaryCalculator() {
                       </div>
                       <span className="text-xs font-bold text-gray-800">{taxPercentage.toFixed(1)}%</span>
                     </div>
-                    <div className="text-right text-[11px] text-gray-400 mt-0.5">
-                      € {fmt(displayTotalTax)}
-                    </div>
+                    <div className="text-right text-[11px] text-gray-400 mt-0.5">€ {fmt(displayTotalTax)}</div>
                   </div>
                 </div>
-
               </div>
             </div>
 
@@ -573,8 +603,8 @@ export default function SalaryCalculator() {
                 <ChevronDown size={14} className="text-gray-400" />
               </div>
               {isCalcOpen && (
-                <div className="bg-white px-4 py-2 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-start gap-4">
-                  <ol className="list-decimal pl-4 space-y-1 text-xs text-gray-600 flex-1">
+                <div className="bg-white px-4 py-4 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-start gap-4">
+                  <ol className="list-decimal pl-4 space-y-1.5 text-xs text-gray-600 flex-1">
                     <li>Your gross income is calculated from all income components (annual).</li>
                     <li>Social security contributions (pension + unemployment) are deducted.</li>
                     <li>Remaining income is taxed using progressive state tax rates.</li>
@@ -582,7 +612,7 @@ export default function SalaryCalculator() {
                   </ol>
                   <button
                     type="button"
-                    className="px-4 py-2 border border-gray-200 rounded-lg text-xs font-bold text-blue-700 hover:bg-gray-50 transition-colors whitespace-nowrap flex-shrink-0 mt-5"
+                    className="px-4 py-2 border border-gray-200 rounded-lg text-xs font-bold text-blue-700 hover:bg-gray-50 transition-colors whitespace-nowrap flex-shrink-0"
                   >
                     Show tax brackets used
                   </button>
@@ -591,7 +621,6 @@ export default function SalaryCalculator() {
             </div>
 
           </div>
-
         </form>
       </div>
     </div>

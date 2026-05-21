@@ -152,9 +152,9 @@ export default function AverageSalariesByJob() {
       </div>
 
       {/* Tip Box */}
-      <div className="bg-blue-50 border border-blue-100 rounded-xl px-5 py-4 flex gap-3">
-        <Info className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
-        <p className="text-xs text-blue-700 leading-relaxed">
+      <div className="bg-amber-50 border border-amber-100 rounded-xl px-5 py-4 flex gap-3">
+        <Info className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+        <p className="text-xs text-amber-700 leading-relaxed">
           <span className="font-semibold">Try it yourself.</span> Click any job row to pre-fill the
           calculator with that salary and see your personal tax breakdown instantly.
         </p>

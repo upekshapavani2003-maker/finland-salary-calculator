@@ -1,32 +1,64 @@
 "use client";
 
 import { useState } from 'react';
-import { MapPin, Info } from 'lucide-react';
+import { Info } from 'lucide-react';
 
-const ALL_CITIES = [
-  { city: "Helsinki", region: "Uusimaa", municipalTax: 21.0, netSalary: 2850, takeHomePct: 71.3, annualNet: 34200, regionKey: "South Finland" },
-  { city: "Espoo", region: "Uusimaa", municipalTax: 21.0, netSalary: 2850, takeHomePct: 71.3, annualNet: 34200, regionKey: "South Finland" },
-  { city: "Tampere", region: "Pirkanmaa", municipalTax: 21.5, netSalary: 2830, takeHomePct: 70.8, annualNet: 33960, regionKey: "West Finland" },
-  { city: "Turku", region: "Southwest Finland", municipalTax: 18.5, netSalary: 2730, takeHomePct: 69.8, annualNet: 33480, regionKey: "South Finland" },
-  { city: "Jyväskylä", region: "Central Finland", municipalTax: 18.0, netSalary: 2770, takeHomePct: 69.3, annualNet: 33240, regionKey: "West Finland" },
-  { city: "Oulu", region: "North Ostrobothnia", municipalTax: 19.5, netSalary: 2750, takeHomePct: 68.8, annualNet: 33000, regionKey: "North Finland" },
-  { city: "Kuopio", region: "North Savo", municipalTax: 20.0, netSalary: 2730, takeHomePct: 68.3, annualNet: 32760, regionKey: "East Finland" },
-  { city: "Rovaniemi", region: "Lapland", municipalTax: 23.0, netSalary: 2690, takeHomePct: 67.3, annualNet: 32280, regionKey: "Lapland" },
+const BASE_CITIES = [
+  { city: "Helsinki", region: "Uusimaa", municipalTax: 21.0, regionKey: "South Finland" },
+  { city: "Espoo", region: "Uusimaa", municipalTax: 21.0, regionKey: "South Finland" },
+  { city: "Tampere", region: "Pirkanmaa", municipalTax: 21.5, regionKey: "West Finland" },
+  { city: "Turku", region: "Southwest Finland", municipalTax: 18.5, regionKey: "South Finland" },
+  { city: "Jyväskylä", region: "Central Finland", municipalTax: 18.0, regionKey: "West Finland" },
+  { city: "Oulu", region: "North Ostrobothnia", municipalTax: 19.5, regionKey: "North Finland" },
+  { city: "Kuopio", region: "North Savo", municipalTax: 20.0, regionKey: "East Finland" },
+  { city: "Rovaniemi", region: "Lapland", municipalTax: 23.0, regionKey: "Lapland" },
 ];
 
 const REGIONS = ["All regions", "South Finland", "West Finland", "East Finland", "North Finland", "Lapland"];
 
+function calculateNet(gross: number, municipalTax: number): number {
+  if (gross <= 0) return 0;
+  const pension = gross * 0.0715;
+  const unemployment = gross * 0.015;
+  const stateTax = gross * 0.10;
+  const municipal = gross * (municipalTax / 100);
+  return gross - pension - unemployment - stateTax - municipal;
+}
+
 export default function SalaryByCityScreen() {
   const [activeRegion, setActiveRegion] = useState("All regions");
-  const [grossInput, setGrossInput] = useState("4,000");
+  const [grossInput, setGrossInput] = useState("");
+  const [calculatedGross, setCalculatedGross] = useState(0);
+  const [hasCompared, setHasCompared] = useState(false);
+
+  const handleCompare = () => {
+    const parsed = parseFloat(grossInput.replace(/,/g, ''));
+    if (!isNaN(parsed) && parsed > 0) {
+      setCalculatedGross(parsed);
+      setHasCompared(true);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') handleCompare();
+  };
 
   const filtered = activeRegion === "All regions"
-    ? ALL_CITIES
-    : ALL_CITIES.filter(c => c.regionKey === activeRegion);
+    ? BASE_CITIES
+    : BASE_CITIES.filter(c => c.regionKey === activeRegion);
 
-  const maxNet = Math.max(...filtered.map(c => c.netSalary));
-  const minNet = Math.min(...filtered.map(c => c.netSalary));
-  const diff = maxNet - minNet;
+  const computedRows = filtered.map(row => {
+    const net = hasCompared ? calculateNet(calculatedGross, row.municipalTax) : 0;
+    const takeHomePct = hasCompared && calculatedGross > 0
+      ? (net / calculatedGross) * 100
+      : 0;
+    const annualNet = net * 12;
+    return { ...row, net, takeHomePct, annualNet };
+  });
+
+  const maxNet = hasCompared ? Math.max(...computedRows.map(r => r.net)) : 0;
+  const minNet = hasCompared ? Math.min(...computedRows.map(r => r.net)) : 0;
+  const diff = Math.round(maxNet - minNet);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-10 w-full">
@@ -56,11 +88,15 @@ export default function SalaryByCityScreen() {
               type="text"
               value={grossInput}
               onChange={(e) => setGrossInput(e.target.value)}
+              onKeyDown={handleKeyDown}
               className="w-full pl-7 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="4,000 / month"
+              placeholder="Enter gross monthly salary"
             />
           </div>
-          <button className="bg-blue-700 hover:bg-gray-800 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-colors whitespace-nowrap">
+          <button
+            onClick={handleCompare}
+            className="bg-blue-700 hover:bg-blue-800 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-colors whitespace-nowrap"
+          >
             Compare all cities
           </button>
         </div>
@@ -87,7 +123,10 @@ export default function SalaryByCityScreen() {
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden mb-4">
         <div className="px-6 py-3 border-b border-gray-100">
           <p className="text-[10px] font-semibold tracking-widest uppercase text-blue-600">
-            Results for € {grossInput} gross / month
+            {hasCompared
+              ? `Results for € ${calculatedGross.toLocaleString()} gross / month`
+              : 'Enter a salary above and click Compare all cities'
+            }
           </p>
         </div>
 
@@ -103,59 +142,86 @@ export default function SalaryByCityScreen() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((row) => {
-                const barWidth = 40 + ((row.netSalary - minNet) / (maxNet - minNet + 1)) * 60;
-                return (
-                  <tr key={row.city} className="border-b border-gray-50 hover:bg-blue-50/30 transition-colors">
-                    <td className="px-6 py-3">
-                      <div className="flex items-center gap-2">
-                        <MapPin className="w-3.5 h-3.5 text-gray-300 flex-shrink-0" />
-                        <div>
-                          <div className="text-sm font-semibold text-gray-800">{row.city}</div>
-                          <div className="text-[11px] text-gray-400">{row.region}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className="text-sm font-semibold text-red-500">{row.municipalTax.toFixed(2)}%</span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className="text-sm font-semibold text-gray-800">€ {row.netSalary.toLocaleString()}</span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
-                        <div className="w-20 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                          <div
-                            className="h-1.5 bg-blue-700 rounded-full"
-                            style={{ width: `${barWidth}%` }}
-                          />
-                        </div>
-                        <span className="text-xs text-gray-500">{row.takeHomePct}%</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-3 text-right">
-                      <span className="text-sm font-semibold text-gray-800">€ {row.annualNet.toLocaleString()}</span>
-                    </td>
-                  </tr>
-                );
-              })}
+              {computedRows.map((row) => (
+                <tr key={row.city} className="border-b border-gray-50 hover:bg-blue-50/30 transition-colors">
+
+                  {/* City — no icon */}
+                  <td className="px-6 py-3">
+                    <div>
+                      <div className="text-sm font-semibold text-gray-800">{row.city}</div>
+                      <div className="text-[11px] text-gray-400">{row.region}</div>
+                    </div>
+                  </td>
+
+                  {/* Municipal tax */}
+                  <td className="px-4 py-3">
+                    <span className="text-sm font-semibold text-red-500">
+                      {row.municipalTax.toFixed(2)}%
+                    </span>
+                  </td>
+
+                  {/* Net salary */}
+                  <td className="px-4 py-3">
+                    {hasCompared && row.net > 0 ? (
+                      <span className="text-sm font-semibold text-gray-800">
+                        € {Math.round(row.net).toLocaleString()}
+                      </span>
+                    ) : (
+                      <span className="text-sm font-semibold text-gray-300">€ 0</span>
+                    )}
+                  </td>
+
+                  {/* Take-home % — percentage only, no bar */}
+                  <td className="px-4 py-3">
+                    {hasCompared && row.takeHomePct > 0 ? (
+                      <span className="text-sm font-semibold text-gray-700">
+                        {row.takeHomePct.toFixed(1)}%
+                      </span>
+                    ) : (
+                      <span className="text-sm font-semibold text-gray-300">0%</span>
+                    )}
+                  </td>
+
+                  {/* Annual net */}
+                  <td className="px-6 py-3 text-right">
+                    {hasCompared && row.annualNet > 0 ? (
+                      <span className="text-sm font-semibold text-gray-800">
+                        € {Math.round(row.annualNet).toLocaleString()}
+                      </span>
+                    ) : (
+                      <span className="text-sm font-semibold text-gray-300">€ 0</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
 
         <div className="px-6 py-3 border-t border-gray-100">
           <p className="text-[11px] text-gray-400">
-            Based on 2024 municipal tax rates. Net salary shown for €4,000 gross/month with no church tax.
+            {hasCompared
+              ? `Net salary shown for €${calculatedGross.toLocaleString()} gross/month based on 2024 tax rates with no church tax.`
+              : 'Enter a salary above to see net results for each city.'
+            }
           </p>
         </div>
       </div>
 
       {/* Tip Box */}
-      <div className="bg-blue-50 border border-blue-100 rounded-xl px-5 py-4 flex gap-3">
-        <Info className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
-        <p className="text-xs text-blue-700 leading-relaxed">
-          <span className="font-semibold">Tip:</span> Moving from Rovaniemi to Helsinki on the same gross salary gives you approx.{" "}
-          <span className="font-semibold">€ {diff} more per month</span> — but the higher cost of living in Helsinki may offset this benefit.
+      <div className="bg-amber-50 border border-amber-100 rounded-xl px-5 py-4 flex gap-3">
+        <Info className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+        <p className="text-xs text-amber-700 leading-relaxed">
+          {hasCompared && diff > 0 ? (
+            <>
+              <span className="font-semibold">Tip:</span> Moving from Rovaniemi to Helsinki on the same gross salary gives you approx.{" "}
+              <span className="font-semibold">€ {diff} more per month</span> — but the higher cost of living in Helsinki may offset this benefit.
+            </>
+          ) : (
+            <>
+              <span className="font-semibold">Tip:</span> Enter a gross salary and click Compare to see how much your take-home pay differs across Finnish cities.
+            </>
+          )}
         </p>
       </div>
 

@@ -112,13 +112,13 @@ export default function PrivacyPolicyScreen() {
       </div>
 
       {/* Intro Banner */}
-      <div className="bg-blue-50 border border-blue-100 rounded-xl px-5 py-4 mb-6 flex gap-3 items-start">
-        <div className="w-8 h-8 bg-blue-100 border border-blue-200 rounded-lg flex items-center justify-center flex-shrink-0">
-          <Shield className="w-4 h-4 text-blue-600" />
+      <div className="bg-amber-50 border border-amber-200 rounded-xl px-5 py-4 mb-6 flex gap-3 items-start">
+        <div className="w-8 h-8 bg-amber-100 border border-amber-200 rounded-lg flex items-center justify-center flex-shrink-0">
+          <Shield className="w-4 h-4 text-amber-500" />
         </div>
         <div>
-          <p className="text-sm font-semibold text-blue-800 mb-0.5">Your privacy matters</p>
-          <p className="text-xs text-blue-600 leading-relaxed">
+          <p className="text-sm font-semibold text-amber-800 mb-0.5">Your privacy matters</p>
+          <p className="text-xs text-amber-700 leading-relaxed">
             This calculator is privacy-first. Your salary inputs are processed entirely in your browser and never transmitted to our servers.
           </p>
         </div>
@@ -179,8 +179,8 @@ export default function PrivacyPolicyScreen() {
 
               {/* Highlight box */}
               {'highlight' in section && section.highlight && (
-                <div className="bg-blue-50 border border-blue-100 rounded-lg px-4 py-3 mt-3">
-                  <p className="text-xs text-blue-700 leading-relaxed">{section.highlight}</p>
+                <div className="bg-amber-50 border border-amber-100 rounded-lg px-4 py-3 mt-3">
+                  <p className="text-xs text-amber-700 leading-relaxed">{section.highlight}</p>
                 </div>
               )}
 

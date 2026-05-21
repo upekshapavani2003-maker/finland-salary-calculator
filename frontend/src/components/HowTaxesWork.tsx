@@ -149,23 +149,23 @@ export default function HowTaxesWork() {
       </div>
 
       {/* Good to know toggle */}
-      <div className="bg-blue-50 border border-blue-100 rounded-lg overflow-hidden mb-8">
+      <div className="bg-amber-50 border border-amber-100 rounded-lg overflow-hidden mb-8">
         <button
           onClick={() => setOpenNote(!openNote)}
           className="w-full flex items-center justify-between px-4 py-3 text-left"
         >
           <div className="flex items-center gap-2">
-            <Info className="w-4 h-4 text-blue-600" />
-            <span className="text-xs font-semibold text-blue-800">Good to know</span>
+            <Info className="w-4 h-4 text-amber-600" />
+            <span className="text-xs font-semibold text-amber-800">Good to know</span>
           </div>
           {openNote
-            ? <ChevronUp className="w-4 h-4 text-blue-600" />
-            : <ChevronDown className="w-4 h-4 text-blue-600" />
+            ? <ChevronUp className="w-4 h-4 text-amber-600" />
+            : <ChevronDown className="w-4 h-4 text-amber-600" />
           }
         </button>
         {openNote && (
           <div className="px-4 pb-3">
-            <p className="text-xs text-blue-800 leading-relaxed">
+            <p className="text-xs text-amber-800 leading-relaxed">
               Only the income within each bracket is taxed at that rate — not your entire salary.
               Earning €38,000 does not mean all of it is taxed at 19%. Each band is taxed
               independently.

@@ -16,6 +16,9 @@ import CookieSettings from '@/components/CookieSettings';
 import DisclaimerScreen from '@/components/DisclaimerScreen';
 import ContactScreen from '@/components/ContactScreen';
 import PrivacyPolicyScreen from '@/components/PrivacyPolicyScreen';
+import TaxBasicsGuide from '@/components/TaxBasicsGuide';
+import ExpatsGuide from '@/components/ExpatsGuide';
+import FreelancersGuide from '@/components/FreelancersGuide';
 import BottomNav from '@/components/BottomNav';
 
 export default function Home() {

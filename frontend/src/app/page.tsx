@@ -19,6 +19,7 @@ import PrivacyPolicyScreen from '@/components/PrivacyPolicyScreen';
 import TaxBasicsGuide from '@/components/TaxBasicsGuide';
 import ExpatsGuide from '@/components/ExpatsGuide';
 import FreelancersGuide from '@/components/FreelancersGuide';
+import DeductionsGuide from '@/components/DeductionsGuide';
 import BottomNav from '@/components/BottomNav';
 
 export default function Home() {

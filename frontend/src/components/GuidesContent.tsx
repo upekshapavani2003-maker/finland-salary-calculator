@@ -3,6 +3,7 @@ import { Search, BookOpen, Plane, Briefcase, Receipt, ChevronDown, ChevronUp } f
 import TaxBasicsGuide from '@/components/TaxBasicsGuide';
 import ExpatsGuide from '@/components/ExpatsGuide';
 import FreelancersGuide from '@/components/FreelancersGuide';
+import DeductionsGuide from '@/components/DeductionsGuide';
 
 
 const GuidesPage = () => {
@@ -14,6 +15,7 @@ const GuidesPage = () => {
   if (activeGuide === 'tax-basics') return <TaxBasicsGuide onBack={() => setActiveGuide(null)} />;
   if (activeGuide === 'expats') return <ExpatsGuide onBack={() => setActiveGuide(null)} />;
   if (activeGuide === 'freelancers') return <FreelancersGuide onBack={() => setActiveGuide(null)} />;
+  if (activeGuide === 'deductions') return <DeductionsGuide onBack={() => setActiveGuide(null)} />;
 
   const categories = ['All', 'Tax basics', 'Deductions', 'Expats', 'Freelancers', 'Benefits'];
 
@@ -123,7 +125,7 @@ const GuidesPage = () => {
                 <h4 className="text-gray-900 font-bold text-base group-hover:text-blue-600 transition-colors">{guide.title}</h4>
                 <p className="text-gray-500 text-xs mt-1 leading-relaxed">{guide.description}</p>
                 <button
-                  onClick={() => setActiveGuide(guide.key)}
+                  onClick={() => { setActiveGuide(guide.key); window.scrollTo(0, 0); }}
                   className="text-blue-600 text-[12px] font-bold mt-3 flex items-center gap-2 hover:text-blue-800 transition-colors"
                 >
                   Read guide <span className="text-xs">→</span>

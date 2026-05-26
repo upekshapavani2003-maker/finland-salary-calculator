@@ -4,7 +4,7 @@ import { ArrowLeft, ExternalLink, Plane, Globe, FileText, Clock, ChevronDown, Ch
 import { useState } from 'react';
 
 export default function ExpatsGuide({ onBack }: { onBack: () => void }) {
-  const [openSection, setOpenSection] = useState<number | null>(0);
+  const [openSection, setOpenSection] = useState<number | null>(null);
 
   const steps = [
     { step: "1", title: "Register with DVV", desc: "Register your move with the Digital and Population Data Services Agency (DVV) within 3 months of arriving." },
@@ -29,7 +29,9 @@ export default function ExpatsGuide({ onBack }: { onBack: () => void }) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-10 w-full">
-      <button onClick={onBack} className="flex items-center gap-2 text-sm text-blue-600 font-medium mb-6 hover:text-blue-800 transition-colors">
+      <button 
+        onClick={() => { onBack(); window.scrollTo(0, 0); }}
+        className="flex items-center gap-2 text-sm text-blue-600 font-medium mb-6 hover:text-blue-800 transition-colors">
         <ArrowLeft size={16} /> Back to guides
       </button>
 
@@ -109,19 +111,19 @@ export default function ExpatsGuide({ onBack }: { onBack: () => void }) {
             <div className="space-y-3">
               {links.map((link, i) => (
                 <a key={i} href={link.url} target="_blank" rel="noopener noreferrer"
-                  className="block p-3 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors group">
-                  <div className="text-sm font-semibold text-orange-700 group-hover:text-orange-900 flex items-center gap-1.5">
+                  className="block p-3 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition-colors group">
+                  <div className="text-sm font-semibold text-emerald-700 group-hover:text-emerald-900 flex items-center gap-1.5">
                     {link.label} <ExternalLink size={11} className="flex-shrink-0" />
                   </div>
-                  <div className="text-[11px] text-orange-500 mt-0.5 leading-relaxed">{link.desc}</div>
+                  <div className="text-[11px] text-emerald-600 mt-0.5 leading-relaxed">{link.desc}</div>
                 </a>
               ))}
             </div>
           </div>
 
-          <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
-            <p className="text-xs font-semibold text-blue-800 mb-1">Important</p>
-            <p className="text-xs text-blue-700 leading-relaxed">If you work in Finland without registering, your employer is legally required to withhold 35% tax at source. Always register promptly to avoid overpaying.</p>
+          <div className="bg-amber-50 border border-amber-100 rounded-xl p-4">
+            <p className="text-xs font-semibold text-amber-800 mb-1">Important</p>
+            <p className="text-xs text-amber-700 leading-relaxed">If you work in Finland without registering, your employer is legally required to withhold 35% tax at source. Always register promptly to avoid overpaying.</p>
           </div>
         </div>
       </div>

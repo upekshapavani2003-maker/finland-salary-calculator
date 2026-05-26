@@ -4,7 +4,7 @@ import { ArrowLeft, ExternalLink, Briefcase, Calculator, FileText, TrendingUp, C
 import { useState } from 'react';
 
 export default function FreelancersGuide({ onBack }: { onBack: () => void }) {
-  const [openSection, setOpenSection] = useState<number | null>(0);
+  const [openSection, setOpenSection] = useState<number | null>(null);
 
   const sections = [
     { title: "What is YEL pension insurance?", content: "YEL (Yrittäjän eläkevakuutus) is mandatory pension insurance for self-employed people in Finland. The contribution is 18.87% of your confirmed YEL income for under-53s. Your YEL income also determines your sickness allowance, parental leave pay, and eventual pension." },
@@ -30,7 +30,9 @@ export default function FreelancersGuide({ onBack }: { onBack: () => void }) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-10 w-full">
-      <button onClick={onBack} className="flex items-center gap-2 text-sm text-blue-600 font-medium mb-6 hover:text-blue-800 transition-colors">
+      <button 
+        onClick={() => { onBack(); window.scrollTo(0, 0); }}
+        className="flex items-center gap-2 text-sm text-blue-600 font-medium mb-6 hover:text-blue-800 transition-colors">
         <ArrowLeft size={16} /> Back to guides
       </button>
 

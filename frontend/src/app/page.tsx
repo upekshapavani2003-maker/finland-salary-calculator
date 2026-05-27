@@ -20,6 +20,7 @@ import TaxBasicsGuide from '@/components/TaxBasicsGuide';
 import ExpatsGuide from '@/components/ExpatsGuide';
 import FreelancersGuide from '@/components/FreelancersGuide';
 import DeductionsGuide from '@/components/DeductionsGuide';
+import TaxBracketsModal from '@/components/TaxBracketsModal';
 import BottomNav from '@/components/BottomNav';
 
 export default function Home() {

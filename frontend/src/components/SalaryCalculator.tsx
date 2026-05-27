@@ -21,6 +21,7 @@ import {
   ShieldCheck as ShieldCheckIcon,
   Trash2
 } from 'lucide-react';
+import TaxBracketsModal from '@/components/TaxBracketsModal';
 
 const MUNICIPALITIES = [
   'Helsinki (17.00%)',
@@ -37,7 +38,6 @@ const MUNICIPALITIES = [
   'Pori (20.00%)',
 ];
 
-// Reusable custom municipality dropdown
 function MunicipalityDropdown({
   value,
   onChange,
@@ -62,7 +62,6 @@ function MunicipalityDropdown({
 
   return (
     <div ref={ref} className="relative w-full">
-      {/* Trigger */}
       <button
         type="button"
         onClick={() => setOpen(!open)}
@@ -75,7 +74,6 @@ function MunicipalityDropdown({
         <ChevronDown size={13} className={`text-gray-400 flex-shrink-0 ml-2 transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
 
-      {/* Dropdown */}
       {open && (
         <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
           <div className="overflow-y-auto max-h-48">
@@ -115,6 +113,7 @@ export default function SalaryCalculator() {
   const [taxYear, setTaxYear] = useState<string>('2024');
   const [isTaxOpen, setIsTaxOpen] = useState<boolean>(false);
   const [isCalcOpen, setIsCalcOpen] = useState<boolean>(false);
+  const [showBrackets, setShowBrackets] = useState<boolean>(false);
   const [calculatedValues, setCalculatedValues] = useState<{
     grossMonthly: number;
     netSalary: number;
@@ -253,7 +252,6 @@ export default function SalaryCalculator() {
             {selectedMode === 'simple' && (
               <div className="flex flex-col gap-3">
 
-                {/* Tax Year */}
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-bold text-gray-700">Tax Year</label>
                   <select
@@ -267,7 +265,6 @@ export default function SalaryCalculator() {
                   </select>
                 </div>
 
-                {/* Gross Salary */}
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2">Gross Salary</label>
                   <div className="flex gap-2 items-center">
@@ -300,7 +297,6 @@ export default function SalaryCalculator() {
                   </div>
                 </div>
 
-                {/* Municipality */}
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2">Municipality</label>
                   <MunicipalityDropdown
@@ -309,7 +305,6 @@ export default function SalaryCalculator() {
                   />
                 </div>
 
-                {/* Church Tax */}
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2">Church Tax</label>
                   <div className="flex gap-6">
@@ -324,7 +319,6 @@ export default function SalaryCalculator() {
                   </div>
                 </div>
 
-                {/* Calculate Button */}
                 <button
                   type="submit"
                   className="w-full bg-blue-700 hover:bg-blue-800 active:scale-[0.99] text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md shadow-blue-200 mt-2"
@@ -333,7 +327,6 @@ export default function SalaryCalculator() {
                   Calculate Net Salary
                 </button>
 
-                {/* Privacy note */}
                 <div className="flex items-center justify-center gap-2 text-[10px] text-gray-400">
                   <ShieldCheckIcon size={13} className="text-green-500 flex-shrink-0" />
                   <span>Your data is not stored. Calculations are done in your browser.</span>
@@ -345,7 +338,6 @@ export default function SalaryCalculator() {
             {selectedMode === 'advanced' && (
               <div className="flex flex-col gap-3">
 
-                {/* Tax Year */}
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-bold text-gray-700">Tax Year</label>
                   <select
@@ -359,7 +351,6 @@ export default function SalaryCalculator() {
                   </select>
                 </div>
 
-                {/* Section 1 */}
                 <div>
                   <div className="mb-2">
                     <div className="text-sm font-bold text-gray-900">1. Income Breakdown</div>
@@ -399,7 +390,6 @@ export default function SalaryCalculator() {
                     ))}
                   </div>
 
-                  {/* Total Gross */}
                   <div className="mt-2 p-3 bg-blue-50 border border-blue-100 rounded-xl">
                     <div className="text-xs font-bold text-blue-800 mb-1">Total Gross Income</div>
                     <div className="flex justify-between">
@@ -409,12 +399,10 @@ export default function SalaryCalculator() {
                   </div>
                 </div>
 
-                {/* Section 2 */}
                 <div className="border-t border-gray-100 pt-1">
                   <div className="text-sm font-bold text-gray-900 mb-3">2. Tax Settings</div>
                   <div className="flex flex-col gap-3">
 
-                    {/* Municipality */}
                     <div>
                       <label className="block text-xs font-bold text-gray-600 mb-1.5">Municipality</label>
                       <MunicipalityDropdown
@@ -424,7 +412,6 @@ export default function SalaryCalculator() {
                       />
                     </div>
 
-                    {/* Church Tax */}
                     <div>
                       <label className="block text-xs font-bold text-gray-600 mb-1.5">Church Tax</label>
                       <div className="flex gap-6">
@@ -441,7 +428,6 @@ export default function SalaryCalculator() {
                   </div>
                 </div>
 
-                {/* Calculate Button */}
                 <button
                   type="submit"
                   className="w-full bg-blue-700 hover:bg-blue-800 active:scale-[0.99] text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md shadow-blue-200 mt-2"
@@ -450,7 +436,6 @@ export default function SalaryCalculator() {
                   Calculate Net Salary
                 </button>
 
-                {/* Privacy note */}
                 <div className="flex items-center justify-center gap-2 text-[10px] text-gray-400">
                   <ShieldCheckIcon size={13} className="text-green-500 flex-shrink-0" />
                   <span>Your data is not stored. Calculations are done in your browser.</span>
@@ -656,8 +641,10 @@ export default function SalaryCalculator() {
                     <li>Remaining income is taxed using progressive state tax rates.</li>
                     <li>Municipal and church taxes are calculated on the taxable income.</li>
                   </ol>
+                  {/* ── UPDATED BUTTON ── */}
                   <button
                     type="button"
+                    onClick={() => setShowBrackets(true)}
                     className="px-4 py-2 border border-gray-200 rounded-lg text-xs font-bold text-blue-700 hover:bg-gray-50 transition-colors whitespace-nowrap flex-shrink-0"
                   >
                     Show tax brackets used
@@ -669,6 +656,18 @@ export default function SalaryCalculator() {
           </div>
         </form>
       </div>
+
+      {/* ── TAX BRACKETS MODAL ── */}
+      {showBrackets && (
+        <TaxBracketsModal
+          grossMonthly={displayGrossMonthly}
+          municipalityRate={displayMunicipalityRate}
+          churchMember={displayChurchMember}
+          taxYear={displayTaxYear}
+          onClose={() => setShowBrackets(false)}
+        />
+      )}
+
     </div>
   );
 }

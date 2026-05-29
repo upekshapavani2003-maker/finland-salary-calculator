@@ -38,6 +38,25 @@ const MUNICIPALITIES = [
   'Pori (20.00%)',
 ];
 
+const TAX_BRACKETS = [
+  { min: 0,     max: 19900,    rate: 0     },
+  { min: 19900, max: 29700,    rate: 12.64 },
+  { min: 29700, max: 49000,    rate: 19.00 },
+  { min: 49000, max: 85800,    rate: 25.00 },
+  { min: 85800, max: Infinity, rate: 31.25 },
+];
+
+function calculateStateTaxMonthly(grossMonthly: number): number {
+  const annual = grossMonthly * 12;
+  let stateTaxAnnual = 0;
+  for (const bracket of TAX_BRACKETS) {
+    if (annual <= bracket.min) break;
+    const taxable = Math.min(annual, bracket.max) - bracket.min;
+    stateTaxAnnual += taxable * (bracket.rate / 100);
+  }
+  return stateTaxAnnual / 12;
+}
+
 function MunicipalityDropdown({
   value,
   onChange,
@@ -143,13 +162,13 @@ export default function SalaryCalculator() {
     ? (parsedBaseSalary + parsedOvertime + parsedBonuses + parsedAllowances)
     : (salaryPeriod === 'Yearly' ? parsedGrossSalary / 12 : parsedGrossSalary);
 
-  const pension = actualGrossMonthly * (pensionRate / 100);
+  const pension      = actualGrossMonthly * (pensionRate / 100);
   const unemployment = actualGrossMonthly * (unemploymentRate / 100);
   const municipalTax = actualGrossMonthly * (municipalityRate / 100);
-  const stateTax = actualGrossMonthly * 0.10;
-  const churchTax = actualGrossMonthly * (churchRate / 100);
-  const totalTax = stateTax + municipalTax + pension + unemployment + churchTax;
-  const netSalary = actualGrossMonthly - totalTax;
+  const stateTax     = calculateStateTaxMonthly(actualGrossMonthly);
+  const churchTax    = actualGrossMonthly * (churchRate / 100);
+  const totalTax     = stateTax + municipalTax + pension + unemployment + churchTax;
+  const netSalary    = actualGrossMonthly - totalTax;
 
   const handleCalculate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -179,25 +198,25 @@ export default function SalaryCalculator() {
     setHasCalculated(false);
   };
 
-  const displayNetSalary = hasCalculated && calculatedValues ? calculatedValues.netSalary : 0;
-  const displayTotalTax = hasCalculated && calculatedValues ? calculatedValues.totalTax : 0;
-  const displayGrossMonthly = hasCalculated && calculatedValues ? calculatedValues.grossMonthly : 0;
-  const displayStateTax = hasCalculated && calculatedValues ? calculatedValues.stateTax : 0;
-  const displayMunicipalTax = hasCalculated && calculatedValues ? calculatedValues.municipalTax : 0;
-  const displayPension = hasCalculated && calculatedValues ? calculatedValues.pension : 0;
-  const displayUnemployment = hasCalculated && calculatedValues ? calculatedValues.unemployment : 0;
-  const displayChurchTax = hasCalculated && calculatedValues ? calculatedValues.churchTax : 0;
+  const displayNetSalary      = hasCalculated && calculatedValues ? calculatedValues.netSalary : 0;
+  const displayTotalTax       = hasCalculated && calculatedValues ? calculatedValues.totalTax : 0;
+  const displayGrossMonthly   = hasCalculated && calculatedValues ? calculatedValues.grossMonthly : 0;
+  const displayStateTax       = hasCalculated && calculatedValues ? calculatedValues.stateTax : 0;
+  const displayMunicipalTax   = hasCalculated && calculatedValues ? calculatedValues.municipalTax : 0;
+  const displayPension        = hasCalculated && calculatedValues ? calculatedValues.pension : 0;
+  const displayUnemployment   = hasCalculated && calculatedValues ? calculatedValues.unemployment : 0;
+  const displayChurchTax      = hasCalculated && calculatedValues ? calculatedValues.churchTax : 0;
   const displayMunicipalityRate = hasCalculated && calculatedValues ? calculatedValues.municipalityRate : municipalityRate;
-  const displayTaxYear = hasCalculated && calculatedValues ? calculatedValues.taxYear : taxYear;
-  const displayChurchMember = hasCalculated && calculatedValues ? calculatedValues.churchMember : churchMember;
+  const displayTaxYear        = hasCalculated && calculatedValues ? calculatedValues.taxYear : taxYear;
+  const displayChurchMember   = hasCalculated && calculatedValues ? calculatedValues.churchMember : churchMember;
 
   const taxPercentage = displayGrossMonthly > 0 ? (displayTotalTax / displayGrossMonthly) * 100 : 0;
   const netPercentage = displayGrossMonthly > 0 ? (displayNetSalary / displayGrossMonthly) * 100 : 0;
 
-  const radius = 52;
+  const radius       = 52;
   const circumference = 2 * Math.PI * radius;
-  const netDash = hasCalculated ? (netPercentage / 100) * circumference : 0;
-  const taxDash = hasCalculated ? (taxPercentage / 100) * circumference : 0;
+  const netDash      = hasCalculated ? (netPercentage / 100) * circumference : 0;
+  const taxDash      = hasCalculated ? (taxPercentage / 100) * circumference : 0;
 
   const fmt = (n: number) => n.toLocaleString(undefined, { maximumFractionDigits: 0 });
 
@@ -641,7 +660,6 @@ export default function SalaryCalculator() {
                     <li>Remaining income is taxed using progressive state tax rates.</li>
                     <li>Municipal and church taxes are calculated on the taxable income.</li>
                   </ol>
-                  {/* ── UPDATED BUTTON ── */}
                   <button
                     type="button"
                     onClick={() => setShowBrackets(true)}

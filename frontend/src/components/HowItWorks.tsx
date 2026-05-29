@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   UserCircle2, 
   Percent,
@@ -20,7 +20,41 @@ interface StepItem {
   desc: string;
 }
 
+interface TaxBracket {
+  range: string;
+  rate: string;
+}
+
+const TAX_BRACKETS: Record<string, TaxBracket[]> = {
+  '2024': [
+    { range: "€0 – €20,500", rate: "12.64%" },
+    { range: "€20,501 – €30,500", rate: "19.00%" },
+    { range: "€30,501 – €50,400", rate: "30.25%" },
+    { range: "€50,401 – €88,200", rate: "34.00%" },
+    { range: "€88,201 – €150,000", rate: "42.00%" },
+    { range: "Over €150,000", rate: "44.00%" },
+  ],
+  '2025': [
+    { range: "€0 – €21,200", rate: "12.64%" },
+    { range: "€21,201 – €31,500", rate: "19.00%" },
+    { range: "€31,501 – €52,100", rate: "30.25%" },
+    { range: "€52,101 – €91,300", rate: "34.00%" },
+    { range: "€91,301 – €150,000", rate: "42.00%" },
+    { range: "Over €150,000", rate: "44.00%" },
+  ],
+  '2026': [
+    { range: "€0 – €22,000", rate: "12.64%" },
+    { range: "€22,001 – €32,500", rate: "19.00%" },
+    { range: "€32,501 – €54,000", rate: "30.25%" },
+    { range: "€54,001 – €94,000", rate: "34.00%" },
+    { range: "€94,001 – €150,000", rate: "42.00%" },
+    { range: "Over €150,000", rate: "44.00%" },
+  ],
+};
+
 export default function HowItWorks() {
+  const [bracketYear, setBracketYear] = useState<string>('2024');
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-10 w-full" id="how-it-works">
       {/* Header Section */}
@@ -132,7 +166,22 @@ export default function HowItWorks() {
 
       {/* Section: TAX BRACKETS */}
       <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-        <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider text-center mb-6">Tax brackets (2024)</h3>
+        {/* Header row with title + year dropdown */}
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+            Tax brackets ({bracketYear})
+          </h3>
+          <select
+            value={bracketYear}
+            onChange={(e) => setBracketYear(e.target.value)}
+            className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 text-sm text-gray-600 font-medium outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+            <option value="2026">2026</option>
+          </select>
+        </div>
+
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 text-sm">
             <thead className="bg-gray-50">
@@ -146,14 +195,7 @@ export default function HowItWorks() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {[
-                { range: "€0 – €20,500", rate: "12.64%" },
-                { range: "€20,501 – €30,500", rate: "19.00%" },
-                { range: "€30,501 – €50,400", rate: "30.25%" },
-                { range: "€50,401 – €88,200", rate: "34.00%" },
-                { range: "€88,201 – €150,000", rate: "42.00%" },
-                { range: "Over €150,000", rate: "44.00%" }
-              ].map((row, idx: number) => (
+              {TAX_BRACKETS[bracketYear].map((row, idx: number) => (
                 <tr key={idx} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50/50"}>
                   <td className="px-6 py-4 whitespace-nowrap text-gray-900 font-medium">{row.range}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-gray-600 font-medium">{row.rate}</td>

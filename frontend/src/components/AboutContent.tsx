@@ -1,12 +1,14 @@
 "use client";
 
 import React from 'react';
-import { Users, Calendar, ShieldCheck, ExternalLink } from 'lucide-react';
+import { Users, Calendar, ShieldCheck } from 'lucide-react';
 
 const AboutContent = () => {
+  const currentYear = new Date().getFullYear().toString();
+
   const stats = [
     { label: 'Monthly active users', value: '310+', icon: <Users size={20} /> },
-    { label: 'Tax year data', value: '2024', icon: <Calendar size={20} /> },
+    { label: 'Tax year data', value: currentYear, icon: <Calendar size={20} /> },
     { label: 'Free to use', value: '100%', icon: <ShieldCheck size={20} /> },
   ];
 

@@ -13,16 +13,35 @@ import {
   ChevronUp,
 } from 'lucide-react';
 
-export default function HowTaxesWork() {
-  const [openNote, setOpenNote] = useState(false);
-
-  const brackets = [
+const BRACKETS: Record<string, { range: string; rate: string; pct: number }[]> = {
+  '2024': [
+    { range: "€0 – €19,200", rate: "0%", pct: 0 },
+    { range: "€19,200 – €28,700", rate: "12.5%", pct: 40 },
+    { range: "€28,700 – €47,300", rate: "19.0%", pct: 65 },
+    { range: "€47,300 – €82,900", rate: "25.0%", pct: 80 },
+    { range: "€82,900+", rate: "31.25%", pct: 100 },
+  ],
+  '2025': [
+    { range: "€0 – €19,500", rate: "0%", pct: 0 },
+    { range: "€19,500 – €29,100", rate: "12.5%", pct: 40 },
+    { range: "€29,100 – €48,200", rate: "19.0%", pct: 65 },
+    { range: "€48,200 – €84,400", rate: "25.0%", pct: 80 },
+    { range: "€84,400+", rate: "31.25%", pct: 100 },
+  ],
+  '2026': [
     { range: "€0 – €19,900", rate: "0%", pct: 0 },
     { range: "€19,900 – €29,700", rate: "12.5%", pct: 40 },
     { range: "€29,700 – €49,000", rate: "19.0%", pct: 65 },
     { range: "€49,000 – €85,800", rate: "25.0%", pct: 80 },
     { range: "€85,800+", rate: "31.25%", pct: 100 },
-  ];
+  ],
+};
+
+export default function HowTaxesWork() {
+  const [openNote, setOpenNote] = useState(false);
+  const [bracketYear, setBracketYear] = useState('2026');
+
+  const brackets = BRACKETS[bracketYear];
 
   const twoTierItems = [
     {
@@ -120,10 +139,21 @@ export default function HowTaxesWork() {
 
       <hr className="my-6 border-gray-100" />
 
-      {/* Tax Brackets */}
-      <p className="text-sm font-semibold tracking-widest uppercase text-gray-400 mb-4">
-        State income tax brackets (2026)
-      </p>
+      {/* Tax Brackets header row with year dropdown */}
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-sm font-semibold tracking-widest uppercase text-gray-400">
+          State income tax brackets ({bracketYear})
+        </p>
+        <select
+          value={bracketYear}
+          onChange={(e) => setBracketYear(e.target.value)}
+          className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 text-sm text-gray-600 font-medium outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        >
+          <option value="2024">2024</option>
+          <option value="2025">2025</option>
+          <option value="2026">2026</option>
+        </select>
+      </div>
 
       <div className="bg-white rounded-xl border border-gray-100 overflow-hidden mb-4">
         <div className="grid grid-cols-[1fr_2fr_52px] gap-2 px-4 py-2 bg-gray-50 text-[10px] font-semibold tracking-widest uppercase text-gray-400">

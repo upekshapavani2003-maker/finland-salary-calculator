@@ -3,8 +3,35 @@
 import { ArrowLeft, ExternalLink, BookOpen, TrendingUp, Building2, Coins, ShieldCheck, ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
 
+const BRACKETS_BY_YEAR: Record<string, { range: string; rate: string; color: string }[]> = {
+  '2024': [
+    { range: "€0 – €19,900", rate: "0%", color: "bg-gray-100 text-gray-500" },
+    { range: "€19,900 – €29,700", rate: "12.64%", color: "bg-blue-50 text-blue-700" },
+    { range: "€29,700 – €49,000", rate: "19.00%", color: "bg-blue-100 text-blue-700" },
+    { range: "€49,000 – €85,800", rate: "25.00%", color: "bg-blue-200 text-blue-800" },
+    { range: "€85,800+", rate: "31.25%", color: "bg-blue-300 text-blue-900" },
+  ],
+  '2025': [
+    { range: "€0 – €20,500", rate: "0%", color: "bg-gray-100 text-gray-500" },
+    { range: "€20,500 – €30,400", rate: "12.64%", color: "bg-blue-50 text-blue-700" },
+    { range: "€30,400 – €50,400", rate: "19.00%", color: "bg-blue-100 text-blue-700" },
+    { range: "€50,400 – €88,200", rate: "25.00%", color: "bg-blue-200 text-blue-800" },
+    { range: "€88,200+", rate: "31.25%", color: "bg-blue-300 text-blue-900" },
+  ],
+  '2026': [
+    { range: "€0 – €21,200", rate: "0%", color: "bg-gray-100 text-gray-500" },
+    { range: "€21,200 – €31,300", rate: "12.64%", color: "bg-blue-50 text-blue-700" },
+    { range: "€31,300 – €52,100", rate: "19.00%", color: "bg-blue-100 text-blue-700" },
+    { range: "€52,100 – €91,300", rate: "25.00%", color: "bg-blue-200 text-blue-800" },
+    { range: "€91,300+", rate: "31.25%", color: "bg-blue-300 text-blue-900" },
+  ],
+};
+
 export default function TaxBasicsGuide({ onBack }: { onBack: () => void }) {
   const [openSection, setOpenSection] = useState<number | null>(null);
+  const [bracketYear, setBracketYear] = useState<string>('2024');
+
+  const brackets = BRACKETS_BY_YEAR[bracketYear];
 
   const sections = [
     {
@@ -29,14 +56,6 @@ export default function TaxBasicsGuide({ onBack }: { onBack: () => void }) {
     },
   ];
 
-  const brackets = [
-    { range: "€0 – €19,900", rate: "0%", color: "bg-gray-100 text-gray-500" },
-    { range: "€19,900 – €29,700", rate: "12.64%", color: "bg-blue-50 text-blue-700" },
-    { range: "€29,700 – €49,000", rate: "19.00%", color: "bg-blue-100 text-blue-700" },
-    { range: "€49,000 – €85,800", rate: "25.00%", color: "bg-blue-200 text-blue-800" },
-    { range: "€85,800+", rate: "31.25%", color: "bg-blue-300 text-blue-900" },
-  ];
-
   const links = [
     { label: "MyTax — Finnish Tax Administration", url: "https://www.vero.fi/en/individuals/tax-card-and-tax-return/", desc: "Request your tax card, file returns, check your tax status." },
     { label: "Tax rates 2024 — vero.fi", url: "https://www.vero.fi/en/individuals/tax-card-and-tax-return/how-much-tax-do-i-pay/", desc: "Official 2024 income tax brackets and rates." },
@@ -45,7 +64,7 @@ export default function TaxBasicsGuide({ onBack }: { onBack: () => void }) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-10 w-full">
-      <button 
+      <button
         onClick={() => { onBack(); window.scrollTo(0, 0); }}
         className="flex items-center gap-2 text-sm text-blue-600 font-medium mb-6 hover:text-blue-800 transition-colors">
         <ArrowLeft size={16} /> Back to guides
@@ -85,7 +104,22 @@ export default function TaxBasicsGuide({ onBack }: { onBack: () => void }) {
 
           {/* Tax brackets */}
           <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-            <h3 className="text-sm font-bold text-gray-800 mb-4">2024 State income tax brackets</h3>
+            {/* Header row with title + dropdown */}
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-bold text-gray-800">
+                {bracketYear} State income tax brackets
+              </h3>
+              <select
+                value={bracketYear}
+                onChange={(e) => setBracketYear(e.target.value)}
+                className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 text-sm text-gray-600 font-medium outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+              </select>
+            </div>
+
             <div className="space-y-2">
               {brackets.map((b, i) => (
                 <div key={i} className="flex items-center justify-between px-4 py-2.5 rounded-lg bg-gray-50">
@@ -94,7 +128,9 @@ export default function TaxBasicsGuide({ onBack }: { onBack: () => void }) {
                 </div>
               ))}
             </div>
-            <p className="text-[11px] text-gray-400 mt-3 leading-relaxed">Only the income within each bracket is taxed at that rate — not your total salary.</p>
+            <p className="text-[11px] text-gray-400 mt-3 leading-relaxed">
+              Only the income within each bracket is taxed at that rate — not your total salary.
+            </p>
           </div>
 
           {/* FAQ accordion */}

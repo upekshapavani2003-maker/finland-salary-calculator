@@ -38,14 +38,16 @@ const MUNICIPALITIES = [
   'Pori (20.00%)',
 ];
 
+// ── CORRECT BRACKETS — matches TaxBracketsModal exactly ──
 const TAX_BRACKETS = [
-  { min: 0,     max: 19900,    rate: 0     },
-  { min: 19900, max: 29700,    rate: 12.64 },
-  { min: 29700, max: 49000,    rate: 19.00 },
-  { min: 49000, max: 85800,    rate: 25.00 },
-  { min: 85800, max: Infinity, rate: 31.25 },
+  { min: 0,     max: 20000,    rate: 0  },
+  { min: 20000, max: 30000,    rate: 6  },
+  { min: 30000, max: 50000,    rate: 17 },
+  { min: 50000, max: 80000,    rate: 21 },
+  { min: 80000, max: Infinity, rate: 31 },
 ];
 
+// ── SHARED CALCULATION — same logic as TaxBracketsModal ──
 function calculateStateTaxMonthly(grossMonthly: number): number {
   const annual = grossMonthly * 12;
   let stateTaxAnnual = 0;
@@ -148,27 +150,33 @@ export default function SalaryCalculator() {
   } | null>(null);
 
   const parsedGrossSalary = typeof grossSalary === 'number' ? grossSalary : 0;
-  const parsedBaseSalary = typeof baseSalary === 'number' ? baseSalary : 0;
-  const parsedOvertime = typeof overtimePay === 'number' ? overtimePay : 0;
-  const parsedBonuses = typeof bonuses === 'number' ? bonuses : 0;
-  const parsedAllowances = typeof allowances === 'number' ? allowances : 0;
+  const parsedBaseSalary  = typeof baseSalary  === 'number' ? baseSalary  : 0;
+  const parsedOvertime    = typeof overtimePay === 'number' ? overtimePay : 0;
+  const parsedBonuses     = typeof bonuses     === 'number' ? bonuses     : 0;
+  const parsedAllowances  = typeof allowances  === 'number' ? allowances  : 0;
 
   const municipalityRate = parseFloat(selectedMunicipality.match(/\(([\d.]+)%\)/)?.[1] || '17.00');
-  const pensionRate = 7.15;
-  const unemploymentRate = 1.50;
-  const churchRate = churchMember ? 1.00 : 0.00;
 
   const actualGrossMonthly = selectedMode === 'advanced'
     ? (parsedBaseSalary + parsedOvertime + parsedBonuses + parsedAllowances)
     : (salaryPeriod === 'Yearly' ? parsedGrossSalary / 12 : parsedGrossSalary);
 
-  const pension      = actualGrossMonthly * (pensionRate / 100);
-  const unemployment = actualGrossMonthly * (unemploymentRate / 100);
+  // Step 2: Contributions
+  const pension      = actualGrossMonthly * 0.0715;
+  const unemployment = actualGrossMonthly * 0.015;
+
+  // Step 3: State tax — progressive using correct brackets
+  const stateTax = calculateStateTaxMonthly(actualGrossMonthly);
+
+  // Step 4: Municipal tax
   const municipalTax = actualGrossMonthly * (municipalityRate / 100);
-  const stateTax     = calculateStateTaxMonthly(actualGrossMonthly);
-  const churchTax    = actualGrossMonthly * (churchRate / 100);
-  const totalTax     = stateTax + municipalTax + pension + unemployment + churchTax;
-  const netSalary    = actualGrossMonthly - totalTax;
+
+  // Step 5: Church tax
+  const churchTax = churchMember ? actualGrossMonthly * 0.01 : 0;
+
+  // Step 6: Net
+  const totalTax  = stateTax + municipalTax + pension + unemployment + churchTax;
+  const netSalary = actualGrossMonthly - totalTax;
 
   const handleCalculate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -198,19 +206,19 @@ export default function SalaryCalculator() {
     setHasCalculated(false);
   };
 
-  const displayNetSalary      = hasCalculated && calculatedValues ? calculatedValues.netSalary : 0;
-  const displayTotalTax       = hasCalculated && calculatedValues ? calculatedValues.totalTax : 0;
-  const displayGrossMonthly   = hasCalculated && calculatedValues ? calculatedValues.grossMonthly : 0;
-  const displayStateTax       = hasCalculated && calculatedValues ? calculatedValues.stateTax : 0;
-  const displayMunicipalTax   = hasCalculated && calculatedValues ? calculatedValues.municipalTax : 0;
-  const displayPension        = hasCalculated && calculatedValues ? calculatedValues.pension : 0;
-  const displayUnemployment   = hasCalculated && calculatedValues ? calculatedValues.unemployment : 0;
-  const displayChurchTax      = hasCalculated && calculatedValues ? calculatedValues.churchTax : 0;
+  const displayNetSalary        = hasCalculated && calculatedValues ? calculatedValues.netSalary        : 0;
+  const displayTotalTax         = hasCalculated && calculatedValues ? calculatedValues.totalTax         : 0;
+  const displayGrossMonthly     = hasCalculated && calculatedValues ? calculatedValues.grossMonthly     : 0;
+  const displayStateTax         = hasCalculated && calculatedValues ? calculatedValues.stateTax         : 0;
+  const displayMunicipalTax     = hasCalculated && calculatedValues ? calculatedValues.municipalTax     : 0;
+  const displayPension          = hasCalculated && calculatedValues ? calculatedValues.pension          : 0;
+  const displayUnemployment     = hasCalculated && calculatedValues ? calculatedValues.unemployment     : 0;
+  const displayChurchTax        = hasCalculated && calculatedValues ? calculatedValues.churchTax        : 0;
   const displayMunicipalityRate = hasCalculated && calculatedValues ? calculatedValues.municipalityRate : municipalityRate;
-  const displayTaxYear        = hasCalculated && calculatedValues ? calculatedValues.taxYear : taxYear;
-  const displayChurchMember   = hasCalculated && calculatedValues ? calculatedValues.churchMember : churchMember;
+  const displayTaxYear          = hasCalculated && calculatedValues ? calculatedValues.taxYear          : taxYear;
+  const displayChurchMember     = hasCalculated && calculatedValues ? calculatedValues.churchMember     : churchMember;
 
-  const taxPercentage = displayGrossMonthly > 0 ? (displayTotalTax / displayGrossMonthly) * 100 : 0;
+  const taxPercentage = displayGrossMonthly > 0 ? (displayTotalTax  / displayGrossMonthly) * 100 : 0;
   const netPercentage = displayGrossMonthly > 0 ? (displayNetSalary / displayGrossMonthly) * 100 : 0;
 
   const radius       = 52;
@@ -655,10 +663,10 @@ export default function SalaryCalculator() {
               {isCalcOpen && (
                 <div className="bg-white px-4 py-4 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-start gap-4">
                   <ol className="list-decimal pl-4 space-y-1.5 text-xs text-gray-600 flex-1">
-                    <li>Your gross income is calculated from all income components (annual).</li>
-                    <li>Social security contributions (pension + unemployment) are deducted.</li>
-                    <li>Remaining income is taxed using progressive state tax rates.</li>
-                    <li>Municipal and church taxes are calculated on the taxable income.</li>
+                    <li>Annual income = monthly gross × 12.</li>
+                    <li>Contributions deducted: pension 7.15% + unemployment 1.50%.</li>
+                    <li>State tax applied progressively: 0% / 6% / 17% / 21% / 31%.</li>
+                    <li>Municipal tax ({displayMunicipalityRate.toFixed(2)}%) and church tax applied on gross monthly.</li>
                   </ol>
                   <button
                     type="button"

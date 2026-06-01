@@ -1,14 +1,15 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { X, TrendingUp, Building2, Coins, ShieldCheck, Church, Banknote } from 'lucide-react';
+import { X, Banknote } from 'lucide-react';
 
+// Corrected brackets matching the specified logic
 const BRACKETS = [
-  { min: 0,     max: 19900,    rate: 0,     label: "€0 – €19,900" },
-  { min: 19900, max: 29700,    rate: 12.64, label: "€19,900 – €29,700" },
-  { min: 29700, max: 49000,    rate: 19.00, label: "€29,700 – €49,000" },
-  { min: 49000, max: 85800,    rate: 25.00, label: "€49,000 – €85,800" },
-  { min: 85800, max: Infinity, rate: 31.25, label: "€85,800 +" },
+  { min: 0,     max: 20000,    rate: 0,  label: "€0 – €20,000" },
+  { min: 20000, max: 30000,    rate: 6,  label: "€20,000 – €30,000" },
+  { min: 30000, max: 50000,    rate: 17, label: "€30,000 – €50,000" },
+  { min: 50000, max: 80000,    rate: 21, label: "€50,000 – €80,000" },
+  { min: 80000, max: Infinity, rate: 31, label: "€80,000 +" },
 ];
 
 interface Props {
@@ -26,31 +27,40 @@ export default function TaxBracketsModal({
   taxYear,
   onClose,
 }: Props) {
-  const fmt = (n: number) => Math.round(n).toLocaleString();
+  const fmt  = (n: number) => Math.round(n).toLocaleString();
   const fmtD = (n: number) => n.toFixed(2);
 
   const annual = grossMonthly * 12;
 
+  // Step 2: Contributions
+  const pension    = grossMonthly * 0.0715;
+  const unemp      = grossMonthly * 0.015;
+
+  // Step 3: State tax (progressive on annual gross)
   const bracketData = BRACKETS.map(b => {
     if (annual <= b.min) return { ...b, taxable: 0, tax: 0, active: false };
     const taxable = Math.min(annual, b.max) - b.min;
-    const tax = taxable * b.rate / 100;
+    const tax     = taxable * b.rate / 100;
     return { ...b, taxable, tax, active: true };
   });
 
   const stateTaxAnnual = bracketData.reduce((acc, b) => acc + b.tax, 0);
-  const stateTax   = stateTaxAnnual / 12;
-  const muniTax    = grossMonthly * municipalityRate / 100;
-  const pension    = grossMonthly * 0.0715;
-  const unemp      = grossMonthly * 0.015;
-  const church     = churchMember ? grossMonthly * 0.01 : 0;
-  const totalTax   = stateTax + muniTax + pension + unemp + church;
-  const net        = grossMonthly - totalTax;
-  const effRate    = grossMonthly > 0 ? (totalTax / grossMonthly) * 100 : 0;
+  const stateTax       = stateTaxAnnual / 12;
 
-  const maxBracketTax = Math.max(...bracketData.map(b => b.tax), 1);
+  // Step 4: Municipal tax (flat on gross monthly)
+  const muniTax = grossMonthly * municipalityRate / 100;
+
+  // Step 5: Church tax (optional 1%)
+  const church = churchMember ? grossMonthly * 0.01 : 0;
+
+  // Step 6: Net
+  const totalTax = stateTax + muniTax + pension + unemp + church;
+  const net      = grossMonthly - totalTax;
+  const effRate  = grossMonthly > 0 ? (totalTax / grossMonthly) * 100 : 0;
+
+  const maxBracketTax  = Math.max(...bracketData.map(b => b.tax), 1);
   const activeBrackets = bracketData.filter(b => b.tax > 0).length;
-  const topBracket = [...bracketData].reverse().find(b => b.tax > 0);
+  const topBracket     = [...bracketData].reverse().find(b => b.tax > 0);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -58,7 +68,7 @@ export default function TaxBracketsModal({
   }, []);
 
   const deductions = [
-    { label: "State income tax", amount: stateTax, pct: grossMonthly > 0 ? (stateTax / grossMonthly) * 100 : 0, color: "bg-indigo-400" },
+    { label: "State income tax (progressive)", amount: stateTax, pct: grossMonthly > 0 ? (stateTax / grossMonthly) * 100 : 0, color: "bg-indigo-400" },
     { label: `Municipal tax (${fmtD(municipalityRate)}%)`, amount: muniTax, pct: municipalityRate, color: "bg-amber-400" },
     { label: "Pension contribution (7.15%)", amount: pension, pct: 7.15, color: "bg-emerald-400" },
     { label: "Unemployment insurance (1.50%)", amount: unemp, pct: 1.50, color: "bg-blue-400" },
@@ -72,7 +82,7 @@ export default function TaxBracketsModal({
     >
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
 
-        {/* Modal Header */}
+        {/* Header */}
         <div className="bg-blue-700 rounded-t-2xl p-6 text-white">
           <div className="flex items-start justify-between gap-4">
             <div>
@@ -99,7 +109,7 @@ export default function TaxBracketsModal({
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
               { label: "Gross / month", value: `€ ${fmt(grossMonthly)}`, sub: `€ ${fmt(annual)} / yr` },
-              { label: "Total tax", value: `€ ${fmt(totalTax)}`, sub: `${fmtD(effRate)}% effective` },
+              { label: "Total deductions", value: `€ ${fmt(totalTax)}`, sub: `${fmtD(effRate)}% effective rate` },
               { label: "Net take-home", value: `€ ${fmt(net)}`, sub: `€ ${fmt(net * 12)} / yr`, highlight: true },
               { label: "Brackets reached", value: `${activeBrackets}`, sub: `Top: ${topBracket ? topBracket.rate + '%' : '0%'}` },
             ].map((s, i) => (
@@ -109,6 +119,19 @@ export default function TaxBracketsModal({
                 <div className="text-[11px] text-gray-400 mt-0.5">{s.sub}</div>
               </div>
             ))}
+          </div>
+
+          {/* Logic steps note */}
+          <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3">
+            <p className="text-xs font-semibold text-blue-800 mb-1">Calculation steps</p>
+            <ol className="list-decimal pl-4 space-y-1 text-xs text-blue-700">
+              <li>Annual income = Monthly × 12</li>
+              <li>Contributions: Pension 7.15% + Unemployment 1.5% (deducted from gross monthly)</li>
+              <li>State tax: progressive on annual gross (0% / 6% / 17% / 21% / 31%)</li>
+              <li>Municipal tax: {fmtD(municipalityRate)}% flat on gross monthly</li>
+              {churchMember && <li>Church tax: 1.00% on gross monthly</li>}
+              <li>Net = Gross − all deductions above</li>
+            </ol>
           </div>
 
           {/* Brackets table */}
@@ -124,7 +147,7 @@ export default function TaxBracketsModal({
                 <span>Tax charged</span>
               </div>
               {bracketData.map((b, i) => {
-                const barW = b.tax > 0 ? Math.max((b.tax / maxBracketTax) * 100, 4) : 0;
+                const barW   = b.tax > 0 ? Math.max((b.tax / maxBracketTax) * 100, 4) : 0;
                 const applies = b.active && b.rate > 0;
                 return (
                   <div
@@ -163,7 +186,7 @@ export default function TaxBracketsModal({
             </div>
           </div>
 
-          {/* Deductions breakdown */}
+          {/* Monthly deduction breakdown */}
           <div>
             <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 mb-3">
               Monthly deduction breakdown

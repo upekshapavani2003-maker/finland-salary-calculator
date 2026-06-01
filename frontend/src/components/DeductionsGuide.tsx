@@ -3,8 +3,35 @@
 import { ArrowLeft, ExternalLink, Receipt, Home, Car, GraduationCap, ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
 
+const KEY_LIMITS: Record<string, { label: string; value: string; note: string }[]> = {
+  '2024': [
+    { label: "Automatic income production deduction", value: "€750", note: "Applied to all employees automatically" },
+    { label: "Commuting minimum threshold", value: "€750", note: "Only costs above this are deductible" },
+    { label: "Maximum commuting deduction", value: "€7,000/yr", note: "Per taxpayer" },
+    { label: "Home office fixed deduction", value: "€920/yr", note: "Full-time remote; lower for part-time" },
+    { label: "Trade union fee deduction", value: "100%", note: "Fully deductible with no cap" },
+  ],
+  '2025': [
+    { label: "Automatic income production deduction", value: "€770", note: "Applied to all employees automatically" },
+    { label: "Commuting minimum threshold", value: "€770", note: "Only costs above this are deductible" },
+    { label: "Maximum commuting deduction", value: "€7,000/yr", note: "Per taxpayer" },
+    { label: "Home office fixed deduction", value: "€960/yr", note: "Full-time remote; lower for part-time" },
+    { label: "Trade union fee deduction", value: "100%", note: "Fully deductible with no cap" },
+  ],
+  '2026': [
+    { label: "Automatic income production deduction", value: "€800", note: "Applied to all employees automatically" },
+    { label: "Commuting minimum threshold", value: "€800", note: "Only costs above this are deductible" },
+    { label: "Maximum commuting deduction", value: "€7,000/yr", note: "Per taxpayer" },
+    { label: "Home office fixed deduction", value: "€1,000/yr", note: "Full-time remote; lower for part-time" },
+    { label: "Trade union fee deduction", value: "100%", note: "Fully deductible with no cap" },
+  ],
+};
+
 export default function DeductionsGuide({ onBack }: { onBack: () => void }) {
   const [openSection, setOpenSection] = useState<number | null>(null);
+  const [limitsYear, setLimitsYear] = useState<string>('2024');
+
+  const keyLimits = KEY_LIMITS[limitsYear];
 
   const deductions = [
     { icon: <Car size={16} className="text-blue-600" />, label: "Commuting costs", amount: "Up to €7,000/yr", detail: "Deduct travel costs between home and work if they exceed €750/year. Use the cheapest route (public transport first).", bg: "bg-blue-50" },
@@ -30,7 +57,7 @@ export default function DeductionsGuide({ onBack }: { onBack: () => void }) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-10 w-full">
-      <button 
+      <button
         onClick={() => { onBack(); window.scrollTo(0, 0); }}
         className="flex items-center gap-2 text-sm text-blue-600 font-medium mb-6 hover:text-blue-800 transition-colors">
         <ArrowLeft size={16} /> Back to guides
@@ -68,17 +95,24 @@ export default function DeductionsGuide({ onBack }: { onBack: () => void }) {
             </div>
           </div>
 
-          {/* Deduction limits */}
+          {/* Key limits with year dropdown */}
           <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-            <h3 className="text-sm font-bold text-gray-800 mb-4">Key limits at a glance (2024)</h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-bold text-gray-800">
+                Key limits at a glance ({limitsYear})
+              </h3>
+              <select
+                value={limitsYear}
+                onChange={(e) => setLimitsYear(e.target.value)}
+                className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 text-sm text-gray-600 font-medium outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+              </select>
+            </div>
             <div className="space-y-2">
-              {[
-                { label: "Automatic income production deduction", value: "€750", note: "Applied to all employees automatically" },
-                { label: "Commuting minimum threshold", value: "€750", note: "Only costs above this are deductible" },
-                { label: "Maximum commuting deduction", value: "€7,000/yr", note: "Per taxpayer" },
-                { label: "Home office fixed deduction", value: "€920/yr", note: "Full-time remote; lower for part-time" },
-                { label: "Trade union fee deduction", value: "100%", note: "Fully deductible with no cap" },
-              ].map((item, i) => (
+              {keyLimits.map((item, i) => (
                 <div key={i} className="flex items-center justify-between py-2.5 border-b border-gray-50 last:border-b-0">
                   <div>
                     <div className="text-sm text-gray-700 font-medium">{item.label}</div>
@@ -102,7 +136,9 @@ export default function DeductionsGuide({ onBack }: { onBack: () => void }) {
                   className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-gray-50 transition-colors"
                 >
                   <span className="text-sm font-semibold text-gray-800 pr-4">{s.title}</span>
-                  {openSection === i ? <ChevronUp size={15} className="text-blue-500 flex-shrink-0" /> : <ChevronDown size={15} className="text-gray-400 flex-shrink-0" />}
+                  {openSection === i
+                    ? <ChevronUp size={15} className="text-blue-500 flex-shrink-0" />
+                    : <ChevronDown size={15} className="text-gray-400 flex-shrink-0" />}
                 </button>
                 {openSection === i && (
                   <div className="px-5 pb-4">

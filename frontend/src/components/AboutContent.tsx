@@ -1,9 +1,13 @@
 "use client";
 
 import React from 'react';
-import { Users, Calendar, ShieldCheck } from 'lucide-react';
+import { Users, Calendar, ShieldCheck, ArrowLeft } from 'lucide-react'; // Added ArrowLeft
 
-const AboutContent = () => {
+interface AboutContentProps {
+  onNavigate: (tab: string) => void;
+}
+
+const AboutContent = ({ onNavigate }: AboutContentProps) => {
   const currentYear = new Date().getFullYear().toString();
 
   const stats = [
@@ -39,14 +43,25 @@ const AboutContent = () => {
       {/* Header Section */}
       <div className="bg-blue-700 rounded-lg shadow-sm p-8 text-white mb-8">
         <div className="max-w-3xl">
-          <span className="text-blue-200 text-xs font-semibold uppercase tracking-wider bg-blue-600 px-2.5 py-1 rounded">
-            Our Story
-          </span>
-          <h2 className="text-3xl font-bold mt-4 mb-2">Built for clarity, not complexity</h2>
-          <p className="text-blue-100 text-sm md:text-base">
-            We built this tool because Finnish tax calculations are genuinely confusing — even for 
-            locals. Our goal is to make take-home pay transparent for everyone.
-          </p>
+          {/* Functional Back Button */}
+          <button 
+            onClick={() => onNavigate('calculator')} 
+            className="inline-flex items-center text-sm text-blue-100 hover:text-white mb-6 font-medium transition-colors cursor-pointer group"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform" /> 
+            Back to Calculator
+          </button>
+
+          <div className="block">
+            <span className="text-blue-200 text-xs font-semibold uppercase tracking-wider bg-blue-600 px-2.5 py-1 rounded">
+              Our Story
+            </span>
+            <h2 className="text-3xl font-bold mt-4 mb-2">Built for clarity, not complexity</h2>
+            <p className="text-blue-100 text-sm md:text-base">
+              We built this tool because Finnish tax calculations are genuinely confusing — even for 
+              locals. Our goal is to make take-home pay transparent for everyone.
+            </p>
+          </div>
         </div>
       </div>
 

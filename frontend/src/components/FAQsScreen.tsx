@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from 'react';
-import { Search, ChevronDown, ChevronUp } from 'lucide-react';
+import { Search, ChevronDown, ChevronUp, ArrowLeft } from 'lucide-react'; // Added ArrowLeft
+
+interface FAQsScreenProps {
+  onNavigate: (tab: string) => void;
+}
 
 const ALL_FAQS = [
   {
@@ -58,7 +62,7 @@ const ALL_FAQS = [
 
 const CATEGORIES = ["All", "Calculator", "Tax system", "Deductions", "Expats", "Church tax"];
 
-export default function FAQsScreen() {
+export default function FAQsScreen({ onNavigate }: FAQsScreenProps) {
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -82,14 +86,25 @@ export default function FAQsScreen() {
       {/* Hero Header */}
       <div className="bg-blue-700 rounded-lg shadow-sm p-8 text-white mb-8">
         <div className="max-w-3xl">
-          <span className="text-blue-200 text-xs font-semibold uppercase tracking-wider bg-blue-600 px-2.5 py-1 rounded">
-            Help
-          </span>
-          <h2 className="text-3xl font-bold mt-4 mb-2">Frequently asked questions</h2>
-          <p className="text-blue-100 text-sm md:text-base">
-            Answers to the most common questions about Finnish taxes, salaries,
-            and how this calculator works.
-          </p>
+          {/* Functional Back Button */}
+          <button 
+            onClick={() => onNavigate('calculator')} 
+            className="inline-flex items-center text-sm text-blue-100 hover:text-white mb-6 font-medium transition-colors cursor-pointer group"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform" /> 
+            Back to Calculator
+          </button>
+
+          <div className="block">
+            <span className="text-blue-200 text-xs font-semibold uppercase tracking-wider bg-blue-600 px-2.5 py-1 rounded">
+              Help
+            </span>
+            <h2 className="text-3xl font-bold mt-4 mb-2">Frequently asked questions</h2>
+            <p className="text-blue-100 text-sm md:text-base">
+              Answers to the most common questions about Finnish taxes, salaries,
+              and how this calculator works.
+            </p>
+          </div>
         </div>
       </div>
 

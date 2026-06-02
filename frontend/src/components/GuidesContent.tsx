@@ -1,12 +1,17 @@
+"use client";
+
 import React, { useState } from 'react';
-import { Search, BookOpen, Plane, Briefcase, Receipt, ChevronDown, ChevronUp } from 'lucide-react';
+import { Search, BookOpen, Plane, Briefcase, Receipt, ChevronDown, ChevronUp, ArrowLeft } from 'lucide-react'; // Added ArrowLeft
 import TaxBasicsGuide from '@/components/TaxBasicsGuide';
 import ExpatsGuide from '@/components/ExpatsGuide';
 import FreelancersGuide from '@/components/FreelancersGuide';
 import DeductionsGuide from '@/components/DeductionsGuide';
 
+interface GuidesPageProps {
+  onNavigate: (tab: string) => void;
+}
 
-const GuidesPage = () => {
+const GuidesPage = ({ onNavigate }: GuidesPageProps) => {
   const [activeTab, setActiveTab] = useState('All');
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [activeGuide, setActiveGuide] = useState<string | null>(null);
@@ -71,11 +76,22 @@ const GuidesPage = () => {
       {/* Header */}
       <div className="bg-blue-700 rounded-lg shadow-sm p-8 text-white mb-8">
         <div className="max-w-3xl">
-          <span className="text-blue-200 text-xs font-semibold uppercase tracking-wider bg-blue-600 px-2.5 py-1 rounded">Learn</span>
-          <h2 className="text-3xl font-bold mt-4 mb-2">Tax guides & resources</h2>
-          <p className="text-blue-100 text-sm md:text-base">
-            In-depth articles to help you understand Finnish taxation, maximize your deductions, and plan your finances.
-          </p>
+          {/* Functional Back Button */}
+          <button 
+            onClick={() => onNavigate('calculator')} 
+            className="inline-flex items-center text-sm text-blue-100 hover:text-white mb-6 font-medium transition-colors cursor-pointer group"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform" /> 
+            Back to Calculator
+          </button>
+
+          <div className="block">
+            <span className="text-blue-200 text-xs font-semibold uppercase tracking-wider bg-blue-600 px-2.5 py-1 rounded">Learn</span>
+            <h2 className="text-3xl font-bold mt-4 mb-2">Tax guides & resources</h2>
+            <p className="text-blue-100 text-sm md:text-base">
+              In-depth articles to help you understand Finnish taxation, maximize your deductions, and plan your finances.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -113,6 +129,7 @@ const GuidesPage = () => {
           {filteredGuides.map((guide, index) => (
             <div
               key={index}
+              onClick={() => { setActiveGuide(guide.key); window.scrollTo(0, 0); }}
               className="group bg-white border border-gray-100 rounded-xl p-5 flex items-start gap-5 hover:shadow-md transition-shadow cursor-pointer"
             >
               <div className={`p-3 rounded-lg ${guide.bgColor} flex-shrink-0`}>
@@ -124,12 +141,9 @@ const GuidesPage = () => {
                 </div>
                 <h4 className="text-gray-900 font-bold text-base group-hover:text-blue-600 transition-colors">{guide.title}</h4>
                 <p className="text-gray-500 text-xs mt-1 leading-relaxed">{guide.description}</p>
-                <button
-                  onClick={() => { setActiveGuide(guide.key); window.scrollTo(0, 0); }}
-                  className="text-blue-600 text-[12px] font-bold mt-3 flex items-center gap-2 hover:text-blue-800 transition-colors"
-                >
-                  Read guide <span className="text-xs">→</span>
-                </button>
+                <div className="text-blue-600 text-[12px] font-bold mt-3 flex items-center gap-2 group-hover:text-blue-800 transition-colors">
+                  Read guide <span className="text-xs transition-transform group-hover:translate-x-0.5">→</span>
+                </div>
               </div>
             </div>
           ))}

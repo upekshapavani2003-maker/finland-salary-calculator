@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from 'react';
-import { Search } from 'lucide-react';
+import { Search, ArrowLeft } from 'lucide-react'; // Added ArrowLeft
+
+interface SalaryByCityProps {
+  onNavigate: (tab: string) => void;
+}
 
 const TAX_RATES: Record<string, number> = {
   Helsinki: 17.0,
@@ -44,7 +48,7 @@ function calculateNet(gross: number, municipalTax: number): number {
   return gross - pension - unemployment - stateTax - municipal;
 }
 
-export default function SalaryByCity() {
+export default function SalaryByCity({ onNavigate }: SalaryByCityProps) {
   const [activeRegion, setActiveRegion] = useState("All cities");
   const [searchQuery, setSearchQuery] = useState("");
   const [grossInput, setGrossInput] = useState("");
@@ -81,14 +85,25 @@ export default function SalaryByCity() {
       {/* Hero Header */}
       <div className="bg-blue-700 rounded-lg shadow-sm p-8 text-white mb-8">
         <div className="max-w-3xl">
-          <span className="text-blue-200 text-xs font-semibold uppercase tracking-wider bg-blue-600 px-2.5 py-1 rounded">
-            Compare cities
-          </span>
-          <h2 className="text-3xl font-bold mt-4 mb-2">Salary by city</h2>
-          <p className="text-blue-100 text-sm md:text-base">
-            Compare take-home pay across Finnish cities. See how your municipality affects your net
-            salary due to different local tax rates.
-          </p>
+          {/* Functional Back Button */}
+          <button 
+            onClick={() => onNavigate('calculator')} 
+            className="inline-flex items-center text-sm text-blue-100 hover:text-white mb-6 font-medium transition-colors cursor-pointer group"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform" /> 
+            Back to Calculator
+          </button>
+
+          <div className="block">
+            <span className="text-blue-200 text-xs font-semibold uppercase tracking-wider bg-blue-600 px-2.5 py-1 rounded">
+              Compare cities
+            </span>
+            <h2 className="text-3xl font-bold mt-4 mb-2">Salary by city</h2>
+            <p className="text-blue-100 text-sm md:text-base">
+              Compare take-home pay across Finnish cities. See how your municipality affects your net
+              salary due to different local tax rates.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -209,7 +224,7 @@ export default function SalaryByCity() {
                         )}
                       </td>
 
-                      {/* Take-home % — percentage only */}
+                      {/* Take-home % */}
                       <td className="px-4 py-3.5">
                         {hasCompared && takeHomePct > 0 ? (
                           <span className="text-sm font-semibold text-gray-700">

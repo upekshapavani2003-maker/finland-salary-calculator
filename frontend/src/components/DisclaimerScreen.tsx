@@ -1,17 +1,32 @@
 "use client";
 
-import { Info, AlertTriangle, BookOpen, ShieldAlert, Calculator, ExternalLink } from 'lucide-react';
+import { Info, AlertTriangle, BookOpen, ShieldAlert, Calculator, ExternalLink, ArrowLeft } from 'lucide-react'; // Added ArrowLeft
 
-export default function DisclaimerScreen() {
+interface DisclaimerScreenProps {
+  onNavigate: (tab: string) => void;
+}
+
+export default function DisclaimerScreen({ onNavigate }: DisclaimerScreenProps) {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-10 w-full">
 
       {/* Hero Header */}
       <div className="bg-blue-700 rounded-lg shadow-sm p-8 text-white mb-8">
         <div className="max-w-3xl">
-          <span className="text-blue-200 text-xs font-semibold uppercase tracking-wider bg-blue-600 px-2.5 py-1 rounded">Legal</span>
-          <h2 className="text-3xl font-bold mt-4 mb-2">Disclaimer</h2>
-          <p className="text-blue-100 text-sm md:text-base">Last updated: January 1, 2024</p>
+          {/* Functional Back Button */}
+          <button 
+            onClick={() => onNavigate('calculator')} 
+            className="inline-flex items-center text-sm text-blue-100 hover:text-white mb-6 font-medium transition-colors cursor-pointer group"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform" /> 
+            Back to Calculator
+          </button>
+
+          <div className="block">
+            <span className="text-blue-200 text-xs font-semibold uppercase tracking-wider bg-blue-600 px-2.5 py-1 rounded">Legal</span>
+            <h2 className="text-3xl font-bold mt-4 mb-2">Disclaimer</h2>
+            <p className="text-blue-100 text-sm md:text-base">Last updated: January 1, 2024</p>
+          </div>
         </div>
       </div>
 

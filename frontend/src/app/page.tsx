@@ -44,18 +44,18 @@ export default function Home() {
           </>
         )}
 
-        {activeTab === 'how-it-works' && <HowItWorks />}
-        {activeTab === 'how-taxes-work' && <HowTaxesWork />}
-        {activeTab === 'salary-by-city-screen' && <SalaryByCityScreen />}
-        {activeTab === 'salary-by-city' && <SalaryByCity />}
-        {activeTab === 'average-salaries' && <AverageSalariesByJob />}
-        {activeTab === 'faqs' && <FAQsScreen />}
-        {activeTab === 'guides' && <GuidesContent />}
-        {activeTab === 'about' && <AboutContent />}
-        {activeTab === 'cookie-settings' && <CookieSettings />}
-        {activeTab === 'disclaimer' && <DisclaimerScreen />}
-        {activeTab === 'contact' && <ContactScreen />}
-        {activeTab === 'privacy-policy' && <PrivacyPolicyScreen />}
+        {activeTab === 'how-it-works' && <HowItWorks onNavigate={handleNavigate} />}
+        {activeTab === 'how-taxes-work' && <HowTaxesWork onNavigate={handleNavigate} />}
+        {activeTab === 'salary-by-city-screen' && <SalaryByCityScreen onNavigate={handleNavigate} />}
+        {activeTab === 'salary-by-city' && <SalaryByCity onNavigate={handleNavigate} />}
+        {activeTab === 'average-salaries' && <AverageSalariesByJob onNavigate={handleNavigate} />}
+        {activeTab === 'faqs' && <FAQsScreen onNavigate={handleNavigate} />}
+        {activeTab === 'guides' && <GuidesContent onNavigate={handleNavigate} />}
+        {activeTab === 'about' && <AboutContent onNavigate={handleNavigate} />}
+        {activeTab === 'cookie-settings' && <CookieSettings onNavigate={handleNavigate} />}
+        {activeTab === 'disclaimer' && <DisclaimerScreen onNavigate={handleNavigate}/>}
+        {activeTab === 'contact' && <ContactScreen onNavigate={handleNavigate} />}
+        {activeTab === 'privacy-policy' && <PrivacyPolicyScreen onNavigate={handleNavigate}/>}
 
       </main>
 

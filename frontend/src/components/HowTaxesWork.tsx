@@ -11,7 +11,12 @@ import {
   ShieldCheck,
   ChevronDown,
   ChevronUp,
+  ArrowLeft, // Added ArrowLeft
 } from 'lucide-react';
+
+interface HowTaxesWorkProps {
+  onNavigate: (tab: string) => void;
+}
 
 const BRACKETS: Record<string, { range: string; rate: string; pct: number }[]> = {
   '2024': [
@@ -37,7 +42,7 @@ const BRACKETS: Record<string, { range: string; rate: string; pct: number }[]> =
   ],
 };
 
-export default function HowTaxesWork() {
+export default function HowTaxesWork({ onNavigate }: HowTaxesWorkProps) {
   const [openNote, setOpenNote] = useState(false);
   const [bracketYear, setBracketYear] = useState('2026');
 
@@ -87,13 +92,24 @@ export default function HowTaxesWork() {
       {/* Hero Header */}
       <div className="bg-blue-700 rounded-lg shadow-sm p-8 text-white mb-8">
         <div className="max-w-3xl">
-          <span className="text-blue-200 text-xs font-semibold uppercase tracking-wider bg-blue-600 px-2.5 py-1 rounded">
-            Tax basics
-          </span>
-          <h2 className="text-3xl font-bold mt-4 mb-2">How taxes work in Finland</h2>
-          <p className="text-blue-100 text-sm md:text-base">
-            A plain-language guide to the Finnish tax system — from income brackets to municipal rates, explained simply.
-          </p>
+          {/* Functional Back Button */}
+          <button 
+            onClick={() => onNavigate('calculator')} 
+            className="inline-flex items-center text-sm text-blue-100 hover:text-white mb-6 font-medium transition-colors cursor-pointer group"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform" /> 
+            Back to Calculator
+          </button>
+
+          <div className="block">
+            <span className="text-blue-200 text-xs font-semibold uppercase tracking-wider bg-blue-600 px-2.5 py-1 rounded">
+              Tax basics
+            </span>
+            <h2 className="text-3xl font-bold mt-4 mb-2">How taxes work in Finland</h2>
+            <p className="text-blue-100 text-sm md:text-base">
+              A plain-language guide to the Finnish tax system — from income brackets to municipal rates, explained simply.
+            </p>
+          </div>
         </div>
       </div>
 

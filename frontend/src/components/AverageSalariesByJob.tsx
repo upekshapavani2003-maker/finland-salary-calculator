@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from 'react';
-import { Briefcase, TrendingUp, Info } from 'lucide-react';
+import { Briefcase, TrendingUp, Info, ArrowLeft } from 'lucide-react'; // Added ArrowLeft
+
+interface AverageSalariesByJobProps {
+  onNavigate: (tab: string) => void;
+}
 
 const ALL_JOBS = [
   { title: "Software developer", sector: "Technology", avgGross: 5200, netHelsinki: 3540, rangeMin: 3800, rangeMax: 8500, demand: "High demand" },
@@ -23,7 +27,7 @@ const demandStyle: Record<string, string> = {
   "Lower":       "bg-red-50 text-red-500 border border-red-200",
 };
 
-export default function AverageSalariesByJob() {
+export default function AverageSalariesByJob({ onNavigate }: AverageSalariesByJobProps) {
   const [activeSector, setActiveSector] = useState("All sectors");
 
   const filtered = activeSector === "All sectors"
@@ -40,14 +44,25 @@ export default function AverageSalariesByJob() {
       {/* Hero Header */}
       <div className="bg-blue-700 rounded-lg shadow-sm p-8 text-white mb-8">
         <div className="max-w-3xl">
-          <span className="text-blue-200 text-xs font-semibold uppercase tracking-wider bg-blue-600 px-2.5 py-1 rounded">
-            Professions
-          </span>
-          <h2 className="text-3xl font-bold mt-4 mb-2">Average salaries by job</h2>
-          <p className="text-blue-100 text-sm md:text-base">
-            Check gross and net take-home pay by profession in Finland. All figures are
-            based on 2024 market data and Helsinki municipal tax.
-          </p>
+          {/* Functional Back Button */}
+          <button 
+            onClick={() => onNavigate('calculator')} 
+            className="inline-flex items-center text-sm text-blue-100 hover:text-white mb-6 font-medium transition-colors cursor-pointer group"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform" /> 
+            Back to Calculator
+          </button>
+
+          <div className="block">
+            <span className="text-blue-200 text-xs font-semibold uppercase tracking-wider bg-blue-600 px-2.5 py-1 rounded">
+              Professions
+            </span>
+            <h2 className="text-3xl font-bold mt-4 mb-2">Average salaries by job</h2>
+            <p className="text-blue-100 text-sm md:text-base">
+              Check gross and net take-home pay by profession in Finland. All figures are
+              based on 2024 market data and Helsinki municipal tax.
+            </p>
+          </div>
         </div>
       </div>
 

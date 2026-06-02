@@ -1,6 +1,10 @@
 "use client";
 
-import { Shield, Eye, Database, Share2, Lock, RefreshCw, Mail, FileText, CheckCircle, Clock } from 'lucide-react';
+import { Shield, Eye, Database, Share2, Lock, RefreshCw, Mail, FileText, CheckCircle, Clock, ArrowLeft } from 'lucide-react'; // Added ArrowLeft
+
+interface PrivacyPolicyScreenProps {
+  onNavigate: (tab: string) => void;
+}
 
 const SECTIONS = [
   {
@@ -90,23 +94,34 @@ const chipColor: Record<string, string> = {
   amber: "bg-amber-50 text-amber-800 border border-amber-200",
 };
 
-export default function PrivacyPolicyScreen() {
+export default function PrivacyPolicyScreen({ onNavigate }: PrivacyPolicyScreenProps) {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-10 w-full">
 
       {/* Hero Header */}
       <div className="bg-blue-700 rounded-lg shadow-sm p-8 text-white mb-8">
         <div className="max-w-3xl">
-          <span className="text-blue-200 text-xs font-semibold uppercase tracking-wider bg-blue-600 px-2.5 py-1 rounded">
-            Legal
-          </span>
-          <h2 className="text-3xl font-bold mt-4 mb-2">Privacy Policy</h2>
-          <div className="flex items-center gap-3 mt-2 flex-wrap">
-            <span className="text-blue-100 text-sm">Finland Salary Calculator</span>
-            <span className="w-1 h-1 rounded-full bg-blue-400" />
-            <span className="text-blue-100 text-sm">Last updated: January 1, 2024</span>
-            <span className="w-1 h-1 rounded-full bg-blue-400" />
-            <span className="text-blue-100 text-sm">GDPR compliant</span>
+          {/* Functional Back Button */}
+          <button 
+            onClick={() => onNavigate('calculator')} 
+            className="inline-flex items-center text-sm text-blue-100 hover:text-white mb-6 font-medium transition-colors cursor-pointer group"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform" /> 
+            Back to Calculator
+          </button>
+
+          <div className="block">
+            <span className="text-blue-200 text-xs font-semibold uppercase tracking-wider bg-blue-600 px-2.5 py-1 rounded">
+              Legal
+            </span>
+            <h2 className="text-3xl font-bold mt-4 mb-2">Privacy Policy</h2>
+            <div className="flex items-center gap-3 mt-2 flex-wrap">
+              <span className="text-blue-100 text-sm">Finland Salary Calculator</span>
+              <span className="w-1 h-1 rounded-full bg-blue-400" />
+              <span className="text-blue-100 text-sm">Last updated: January 1, 2024</span>
+              <span className="w-1 h-1 rounded-full bg-blue-400" />
+              <span className="text-blue-100 text-sm">GDPR compliant</span>
+            </div>
           </div>
         </div>
       </div>

@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from 'react';
-import { Info } from 'lucide-react';
+import { Info, ArrowLeft } from 'lucide-react'; // Added ArrowLeft
+
+interface SalaryByCityScreenProps {
+  onNavigate: (tab: string) => void;
+}
 
 const BASE_CITIES = [
   { city: "Helsinki", region: "Uusimaa", municipalTax: 21.0, regionKey: "South Finland" },
@@ -25,7 +29,7 @@ function calculateNet(gross: number, municipalTax: number): number {
   return gross - pension - unemployment - stateTax - municipal;
 }
 
-export default function SalaryByCityScreen() {
+export default function SalaryByCityScreen({ onNavigate }: SalaryByCityScreenProps) {
   const [activeRegion, setActiveRegion] = useState("All regions");
   const [grossInput, setGrossInput] = useState("");
   const [calculatedGross, setCalculatedGross] = useState(0);
@@ -66,13 +70,24 @@ export default function SalaryByCityScreen() {
       {/* Hero Header */}
       <div className="bg-blue-700 rounded-lg shadow-sm p-8 text-white mb-8">
         <div className="max-w-3xl">
-          <span className="text-blue-200 text-xs font-semibold uppercase tracking-wider bg-blue-600 px-2.5 py-1 rounded">
-            Compare cities
-          </span>
-          <h2 className="text-3xl font-bold mt-4 mb-2">Salary by City</h2>
-          <p className="text-blue-100 text-sm md:text-base">
-            Compare take-home pay across Finnish municipalities. Enter a gross salary to see net results side by side.
-          </p>
+          {/* Functional Back Button */}
+          <button 
+            onClick={() => onNavigate('calculator')} 
+            className="inline-flex items-center text-sm text-blue-100 hover:text-white mb-6 font-medium transition-colors cursor-pointer group"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform" /> 
+            Back to Calculator
+          </button>
+
+          <div className="block">
+            <span className="text-blue-200 text-xs font-semibold uppercase tracking-wider bg-blue-600 px-2.5 py-1 rounded">
+              Compare cities
+            </span>
+            <h2 className="text-3xl font-bold mt-4 mb-2">Salary by City</h2>
+            <p className="text-blue-100 text-sm md:text-base">
+              Compare take-home pay across Finnish municipalities. Enter a gross salary to see net results side by side.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -124,7 +139,7 @@ export default function SalaryByCityScreen() {
         <div className="px-6 py-3 border-b border-gray-100">
           <p className="text-[10px] font-semibold tracking-widest uppercase text-blue-600">
             {hasCompared
-              ? `Results for € ${calculatedGross.toLocaleString()} gross / month`
+              ? `Results for € {calculatedGross.toLocaleString()} gross / month`
               : 'Enter a salary above and click Compare all cities'
             }
           </p>
@@ -201,7 +216,7 @@ export default function SalaryByCityScreen() {
         <div className="px-6 py-3 border-t border-gray-100">
           <p className="text-[11px] text-gray-400">
             {hasCompared
-              ? `Net salary shown for €${calculatedGross.toLocaleString()} gross/month based on 2024 tax rates with no church tax.`
+              ? `Net salary shown for €\${calculatedGross.toLocaleString()} gross/month based on 2024 tax rates with no church tax.`
               : 'Enter a salary above to see net results for each city.'
             }
           </p>

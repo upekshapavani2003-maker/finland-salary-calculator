@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from 'react';
 import { 
   UserCircle2, 
@@ -5,8 +7,13 @@ import {
   Landmark,
   ShieldCheck,
   Building,
+  ArrowLeft,
   LucideIcon
 } from 'lucide-react';
+
+interface HowItWorksProps {
+  onNavigate: (tab: string) => void;
+}
 
 interface CalculationFeature {
   title: string;
@@ -52,7 +59,7 @@ const TAX_BRACKETS: Record<string, TaxBracket[]> = {
   ],
 };
 
-export default function HowItWorks() {
+export default function HowItWorks({ onNavigate }: HowItWorksProps) {
   const [bracketYear, setBracketYear] = useState<string>('2024');
 
   return (
@@ -60,13 +67,24 @@ export default function HowItWorks() {
       {/* Header Section */}
       <div className="bg-blue-700 rounded-lg shadow-sm p-8 text-white mb-8">
         <div className="max-w-3xl">
-          <span className="text-blue-200 text-xs font-semibold uppercase tracking-wider bg-blue-600 px-2.5 py-1 rounded">
-            Transparency
-          </span>
-          <h2 className="text-3xl font-bold mt-4 mb-2">How the calculator works</h2>
-          <p className="text-blue-100 text-sm md:text-base">
-            Understand exactly how your net salary is calculated — from gross income to every deduction applied under Finnish tax law.
-          </p>
+          {/* Functional Back Button */}
+          <button 
+            onClick={() => onNavigate('calculator')} 
+            className="inline-flex items-center text-sm text-blue-100 hover:text-white mb-6 font-medium transition-colors cursor-pointer group"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform" /> 
+            Back to Calculator
+          </button>
+          
+          <div className="block">
+            <span className="text-blue-200 text-xs font-semibold uppercase tracking-wider bg-blue-600 px-2.5 py-1 rounded">
+              Transparency
+            </span>
+            <h2 className="text-3xl font-bold mt-4 mb-2">How the calculator works</h2>
+            <p className="text-blue-100 text-sm md:text-base">
+              Understand exactly how your net salary is calculated — from gross income to every deduction applied under Finnish tax law.
+            </p>
+          </div>
         </div>
       </div>
 

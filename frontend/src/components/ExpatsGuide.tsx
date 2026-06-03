@@ -29,17 +29,24 @@ export default function ExpatsGuide({ onBack }: { onBack: () => void }) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-10 w-full">
-      <button 
-        onClick={() => { onBack(); window.scrollTo(0, 0); }}
-        className="flex items-center gap-2 text-sm text-blue-600 font-medium mb-6 hover:text-blue-800 transition-colors">
-        <ArrowLeft size={16} /> Back to guides
-      </button>
 
+      {/* Hero Header */}
       <div className="bg-blue-700 rounded-lg shadow-sm p-8 text-white mb-8">
         <div className="max-w-3xl">
-          <span className="text-blue-200 text-xs font-semibold uppercase tracking-wider bg-blue-600 px-2.5 py-1 rounded">Expats</span>
-          <h2 className="text-3xl font-bold mt-4 mb-2">Moving to Finland? Your tax guide for newcomers</h2>
-          <p className="text-blue-100 text-sm md:text-base">Understand tax residency rules, the progressive tax card, and how to register with the Finnish Tax Administration.</p>
+          {/* Functional Back Button */}
+          <button 
+            onClick={onBack} 
+            className="inline-flex items-center text-sm text-blue-100 hover:text-white mb-6 font-medium transition-colors cursor-pointer group"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform" /> 
+            Back to Guides
+          </button>
+
+          <div className="block">
+            <span className="text-blue-200 text-xs font-semibold uppercase tracking-wider bg-blue-600 px-2.5 py-1 rounded">Expats</span>
+            <h2 className="text-3xl font-bold mt-4 mb-2">Moving to Finland? Your tax guide for newcomers</h2>
+            <p className="text-blue-100 text-sm md:text-base">Understand tax residency rules, the progressive tax card, and how to register with the Finnish Tax Administration.</p>
+          </div>
         </div>
       </div>
 
